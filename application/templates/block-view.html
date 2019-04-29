@@ -1,0 +1,77 @@
+<!-- Block-View: Shows the block view of the synteny blocks and can be browsed. -->
+<div id="blockView">
+    <div class="heading">SYNTENIC BLOCK DETAIL VIEW</div>
+    <div id="block-view-panel-body" class="custom-panel-body">
+        <div id="block-view-content">
+            <div class="row" id="block-view-buttons">
+                <div class="col-md-5">
+                    <button id="download-block-view" class="custom-button" type="button" data-toggle="modal" data-target="#block-set-file-name">Download</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="block-set-file-name" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <br/>
+                                <div class="col-md-11">
+                                    <h4>Save As:</h4>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="close col-md-1" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div class="modal-body" style="height: 160px">
+                                    <div class="col-md-12" style="margin-bottom: 15px;">
+                                        Saving this plot will download two images, one for the plot and one for the legend. If
+                                        this is your first time downloading, your browser may ask for your permission for the
+                                        page to download multiple files. In order to be able to download plots, you will have
+                                        to agree.
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="block-file-name" type="text" data-html="true" placeholder="Enter name for PNG (e.g. 9606_10090_trp53)"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button id="save-block-view" class="custom-button" type="button">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="block-view-navigation" class="col-md-3">
+                    <a><img src="{{ url_for('static', filename='img/left.png') }}" alt="Pan Left" title="Pan Left"  id="pan-left" class="nav-button"></a>
+                    &nbsp;&nbsp;
+                    <a><img src="{{ url_for('static', filename='img/zoom-in.png') }}" alt="Zoom In" title="Zoom In" id="zoom-in" class="nav-button"></a>
+                    &nbsp;&nbsp;
+                    <a><img src="{{ url_for('static', filename='img/reset.png') }}" alt="Reset View" title="Reset" id="reset-view" class="nav-button"></a>
+                    &nbsp;&nbsp;
+                    <a><img src="{{ url_for('static', filename='img/zoom-out.png') }}" alt="Zoom Out" title="Zoom Out" id="zoom-out" class="nav-button"></a>
+                    &nbsp;&nbsp;
+                    <a><img src="{{ url_for('static', filename='img/right.png') }}" alt="Pan Right" title="Pan Right" id="pan-right" class="nav-button"></a>
+                </div>
+                <div id="browser-status" class="status-indicator col-md-3" style="margin-left: 40px;">
+                    <button id="block-view-status" onclick="event.preventDefault();JaxSynteny.logger.openLog()" class="msg"></button>
+                </div>
+            </div>
+            <br/>
+            <div id="pre-block-view">
+                <div class="really-large-padding"></div>
+                <h3>SELECT A FEATURE OR INTERVAL TO VIEW</h3>
+            </div>
+            <div id="spinner-container">
+                <img id="spinner" src="{{ url_for('static', filename='img/loading-spinner.gif') }}"/>
+            </div>
+            <br>
+            <div id="svg-container">
+                <svg id="block-view-svg"></svg>
+                <br>
+                <div id="color-key">
+                    <svg id="chr-color-legend" height="75" width="950"></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Block-View -->

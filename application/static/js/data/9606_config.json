@@ -1,0 +1,58 @@
+{
+"order": 2,
+"organism":
+    {
+        "name": "Homo sapiens",
+        "name_alias": "Human",
+        "taxon_id": 9606,
+        "chromosomes": [
+            {"chr": "1","size": 249250621},
+            {"chr": "2","size": 243199373},
+            {"chr": "3","size": 198022430},
+            {"chr": "4","size": 191154276},
+            {"chr": "5","size": 180915260},
+            {"chr": "6","size": 171115067},
+            {"chr": "7","size": 159138663},
+            {"chr": "8","size": 146364022},
+            {"chr": "9","size": 141213431},
+            {"chr": "10","size": 135534747},
+            {"chr": "11","size": 135006516},
+            {"chr": "12","size": 133851895},
+            {"chr": "13","size": 115169878},
+            {"chr": "14","size": 107349540},
+            {"chr": "15","size": 102531392},
+            {"chr": "16","size": 90354753},
+            {"chr": "17","size": 81195210},
+            {"chr": "18","size": 78077248},
+            {"chr": "19","size": 59128983},
+            {"chr": "20","size": 63025520},
+            {"chr": "21","size": 48129895},
+            {"chr": "22","size": 51304566},
+            {"chr": "X","size": 155270560},
+            {"chr": "Y","size": 59373566}
+        ],
+        "search_categories": [
+            {
+                "name":"gene",
+                "value":"gene symbol",
+                "search_example":"Gene symbol (e.g. BRCA)",
+                "search_type":"GeneName"
+            },
+            {
+                "name":"GO",
+                "value":"Gene Ontology (GO)",
+                "search_example":"GO term (e.g. osmosensory signaling pathway)",
+                "search_type":"OntAnnotation"
+            },
+            {
+                "name":"DO",
+                "value":"Disease Ontology (DO)",
+                "search_example":"DO term (e.g. dynein)",
+                "search_type":"OntAnnotation"
+            }
+        ],
+        "external_resources": [
+            {"url": "https://www.ncbi.nlm.nih.gov/gene/", "name": "NCBI"}
+        ]
+    }
+}

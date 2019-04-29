@@ -1,0 +1,64 @@
+<!-- Genome-View: Shows the reference genome in terms of synteny blocks with comparison genome. -->
+<div id="genomeView">
+    <div class="heading">SYNTENY GENOME VIEW</div>
+    <div class="custom-panel-body">
+        <svg id="genome-view-legend" style="display: none;"></svg>
+        <svg id="genome-view-svg" style="background: #fff;"></svg>
+        <div class="row" id="genome-view-buttons">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button id="clear-genome-view" class="custom-button" type="button">Clear</button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button class="custom-button" type="button" data-toggle="modal" data-target="#genome-set-file-name">Download</button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="genome-set-file-name" tabindex="-1" role="dialog" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <br/>
+                        <div class="col-md-11">
+                            <h4>Save As:</h4>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="close col-md-1" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <br/>
+                        <br/>
+                      <div class="modal-body" style="height: 160px">
+                          <div class="col-md-12" style="margin-bottom: 15px;">
+                              Saving this plot will download two images, one for the plot and one for the legend. If
+                              this is your first time downloading, your browser may ask for your permission for the
+                              page to download multiple files. In order to be able to download plots, you will have
+                              to agree.
+                          </div>
+                          <div class="col-md-9">
+                              <input class="form-control" id="genome-file-name" type="text" data-html="true" placeholder="Enter name for PNG (e.g. 9606_10090_trp53)"/>
+                          </div>
+                          <div class="col-md-3">
+                              <button id="save-genome-view" class="custom-button" type="button">Save</button>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span id="genome-msg"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button id="show-block-view" class="custom-button" type="button">View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Genome View -->

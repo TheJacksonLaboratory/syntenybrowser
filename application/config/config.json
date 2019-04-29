@@ -1,0 +1,79 @@
+{
+"organisms": [
+    {
+        "name": "Homo sapiens",
+        "nameAlias": "Human",
+        "taxonID": 9606,
+        "chromosomes": [
+            {"chr": "1","size": 249250621},
+            {"chr": "2","size": 243199373},
+            {"chr": "3","size": 198022430},
+            {"chr": "4","size": 191154276},
+            {"chr": "5","size": 180915260},
+            {"chr": "6","size": 171115067},
+            {"chr": "7","size": 159138663},
+            {"chr": "8","size": 146364022},
+            {"chr": "9","size": 141213431},
+            {"chr": "10","size": 135534747},
+            {"chr": "11","size": 135006516},
+            {"chr": "12","size": 133851895},
+            {"chr": "13","size": 115169878},
+            {"chr": "14","size": 107349540},
+            {"chr": "15","size": 102531392},
+            {"chr": "16","size": 90354753},
+            {"chr": "17","size": 81195210},
+            {"chr": "18","size": 78077248},
+            {"chr": "19","size": 59128983},
+            {"chr": "20","size": 63025520},
+            {"chr": "21","size": 48129895},
+            {"chr": "22","size": 51304566},
+            {"chr": "X","size": 155270560},
+            {"chr": "Y","size": 59373566}
+        ],
+        "searchCategories": [
+            {"name":"gene", "value":"Gene Name", "searchExample":"gene symbol (e.g. Brca)", "searchCommand":"GeneNameSearch"},
+            {"name":"go", "value":"Functional (GO) Annotation", "searchExample":"gene ontology term (e.g. osmosensory signaling pathway)", "searchCommand":"GoAnnotationSearch"},
+            {"name":"disease_annot", "value":"Disease Annotations", "searchExample":"OMIM term (e.g. dynein)", "searchCommand":"DiseaseAnnotationSearch"}
+        ],
+        "externalResources": [
+            {"url": "http://www.informatics.jax.org/marker/", "name": "MGI"}
+        ]
+    },
+    {
+        "name": "Mus musculus",
+        "nameAlias": "Mouse",
+        "taxonID": 10090,
+        "chromosomes": [
+            {"chr": "1", "size": 195471971},
+            {"chr": "2", "size": 182113224},
+            {"chr": "3", "size": 160039680},
+            {"chr": "4", "size": 156508116},
+            {"chr": "5", "size": 151834684},
+            {"chr": "6", "size": 149736546},
+            {"chr": "7", "size": 145441459},
+            {"chr": "8", "size": 129401213},
+            {"chr": "9", "size": 124595110},
+            {"chr": "10", "size": 130694993},
+            {"chr": "11", "size": 122082543},
+            {"chr": "12", "size": 120129022},
+            {"chr": "13", "size": 120421639},
+            {"chr": "14", "size": 124902244},
+            {"chr": "15", "size": 104043685},
+            {"chr": "16", "size": 98207768},
+            {"chr": "17", "size": 94987271},
+            {"chr": "18", "size": 90702639},
+            {"chr": "19", "size": 61431566},
+            {"chr": "X", "size": 171031299},
+            {"chr": "Y", "size": 91744698}
+        ],
+		"searchCategories": [
+            {"name": "gene", "value": "Gene Name", "searchExample": "gene symbol (e.g. Trp53)", "searchCommand": "GeneNameSearch"},
+            {"name": "qtl", "value": "QTL", "searchExample": "QTL symbol (e.g. Tmev)", "searchCommand": "QTLNameSearch"},
+            {"name": "go", "value": "Functional (GO) Annotations", "searchExample": "gene ontology ID or term (e.g. BMP signaling pathway)", "searchCommand": "GoAnnotationSearch"},
+            {"name": "pheno", "value": "Phenotype Annotations", "searchExample": "phenotype term (e.g. abnormal cell)", "searchCommand": "PhenoAnnotationSearch"}
+        ],
+        "externalResources": [
+            {"url": "https://www.ncbi.nlm.nih.gov/gene/", "name": "NCBI"}
+        ]
+    }]
+}

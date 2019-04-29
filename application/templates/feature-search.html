@@ -1,0 +1,42 @@
+<!-- Feature-Search: Allows users to search for certain features from the databases. -->
+<div id="featureSearch">
+    <div class="heading">FEATURE SEARCH</div>
+    <div class="custom-panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>Search Type</h4>
+                <select class="form-control dark-cerulean-border" id="feature-search-categories" title="The type of search to run"></select>
+            </div>
+            <div class="col-sm-6">
+                <h4>Search Term</h4>
+                <input class="form-control tooltip-enabled typeahead dark-cerulean-border" id="searchterm" type="text" data-toggle="tooltip" data-html="true"/>
+                <br>
+                <span id="search-msg"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <button id="feature-search-btn" class="custom-button" type="button" style="width:100%;">Search</button>
+            </div>
+            <div id="view-genome-view-top" class="col-sm-3"></div>
+            <div class="col-sm-3"></div>
+        </div>
+        <hr style="margin: 10px 0 0 0;" />
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="search-result-div">
+                    <div class="large-padding"></div>
+                    <h3>CHOOSE A FEATURE TO DISPLAY DATA</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3"></div>
+            <div id="view-blocks-bottom" class="col-sm-3"></div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
+</div>
+<!-- End of Feature-Search -->

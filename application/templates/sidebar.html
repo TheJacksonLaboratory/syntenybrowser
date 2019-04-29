@@ -1,0 +1,88 @@
+<!-- static navbar -->
+<header>
+    <div class="navbar-header text13">
+        <span>
+            <a href="{{ url_for('index') }}">
+                <img id="logo" src="{{ url_for('static', filename='img/synteny_logo.png') }}">
+            </a>
+        </span>
+    </div>
+    <ul class="header-nav">
+        <a href="{{ url_for('index') }}">SYNTENY BROWSER</a>
+        <a href="{{ url_for('about') }}">ABOUT</a>
+        <a href="{{ url_for('docs') }}">DOCS</a>
+        <!-- <a href="{{ url_for('license') }}">LICENSE</a> -->
+    </ul>
+</header>
+
+<div id="collapsed-panel" class="settings">
+    <img id="open-settings" src="{{ url_for('static', filename='img/settings-icon.png') }}">
+</div>
+<div id="set-open" class="settings closed">
+    <img id="collapse-panel-icon" src="{{ url_for('static', filename='img/close-icon.png') }}">
+    <div id="settings-content">
+        <div class="settings-title">
+            <h3>View Settings</h3>
+        </div>
+        <div class="settings-block">
+            Reference Species
+            <select class="form-control tooltip-enabled" id="ref-genome-select"
+                    title="The species that the reference gene identifiers are coming from." style="width:95%">
+                {% for s in species %}
+                    {% if loop.index == 1 %}
+                        <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
+                    {% else %}
+                        <option value="{{ s.id }}">{{ s.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="settings-block">
+            Comparison Species
+            <select class="form-control tooltip-enabled col-md-4" id="comp-genome-select"
+                    title="The species that the comparison gene identifiers are coming from." style="width: 95%;">
+                {% for s in species %}
+                    {% if loop.index == 2 %}
+                        <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
+                    {% else %}
+                        <option value="{{ s.id }}">{{ s.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <br/>
+        <div class="settings-block">
+            Reference Genome Interval
+            <input class="form-control tooltip-enabled"
+                type="text"
+                id="ref-genome-interval"
+                placeholder="Eg: Chr1:10000-2000000"
+                data-toggle="tooltip"
+                data-html="true"
+                title="" style="width: 95%"/>
+            <span id="ref-genome-interval-msg"></span>
+            <br/>
+            <button id="update-btn" class="custom-button" type="button">Update View</button>
+        </div>
+        <div class="settings-block">
+            <hr class="settings-hr">
+        </div>
+        <div class="settings-title">
+            <h3>Block View Settings</h3>
+        </div>
+        <div class="settings-block">
+            <label class="checkbox-inline">
+                <input type="checkbox" id="bv-true-orientation" />
+                Show true orientation of comparison genome relative to reference
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" id="bv-show-gene-symbols" />
+                Always show gene symbols
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" id="bv-show-anchors" />
+                Show anchors
+            </label>
+        </div>
+    </div>
+</div>

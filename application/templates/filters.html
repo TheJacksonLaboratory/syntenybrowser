@@ -1,0 +1,225 @@
+<!-- Block-View Filter: this section is a collapsable panel. It will allow users to search for certain features from the databases. -->
+<div id="blockViewFilter">
+    <div class="heading">SYNTENIC BLOCK FEATURE DISPLAY FILTERS</div>
+    <div id="filter-panel-body">
+        <div id="filter-panel-body">
+            <div class="row text-center">
+                <div class="col-xs-0 col-sm-6 col-md-8"></div>
+                <div id="filter-status" class="status-indicator col-xs-12 col-sm-6 col-md-4">
+                    <button id="data-status-board-filter" class="msg"></button>
+                </div>
+            </div>
+            <br>
+            <!-- main panel area -->
+            <div class="row">
+                <div id="left-filter-section" class="col-sm-12 col-md-6">
+                    <div class="filter-section">
+                        <br>
+                        <div class="row text-center">
+                            <div class="col-sm-12">
+                                <div id="results-blockview-filter" class="dark-cerulean">
+                                    <span class="black">CURRENT FILTER SELECTION</span>
+                                    <br>
+                                    <span id="filter-selection-terms-board">" "</span>
+                                    <span class="black text7" id="filter-results-found-board" style="font-size:12px;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-1 col-sm-3 col-md-3">&nbsp;</div>
+                            <div class="col-xs-11 col-sm-9 col-md-9">
+                                <div class="checkbox">
+                                    <input id="hide-genome-features-cb" class="styled" type="checkbox" value="hide-genes">
+                                    <label for="hide-genome-features-cb" style="font-size: 10px; padding-left: 0;">
+                                        HIDE ALL GENOME FEATURES THAT DON'T MATCH FILTER REQUIREMENTS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+						
+                        <div class="form-horizontal" style="margin-top: 5px;">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">
+                                    <b>Filter Criteria 1 (FC1):</b><h6>Find Gene by ID or Symbol</h6>
+                                </label>
+                                <div class="col-md-7 dark-cerulean bg-white-smoke dark-cerulean-border">
+                                    <div class="row" style="margin: 10px 0">
+                                        <div class="col-sm-12">
+                                             <input id="gene-symbol-id-filter-input" class="form-control tooltip-enabled typeahead blockview-filter-input" type="text" placeholder="gene symbol (e.g. Trp53)" disabled="disabled" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                     <b>Filter Criteria 2 (FC2):</b><h6>Find Gene(s) by Type</h6>
+                                </label>
+                                <div class="col-sm-7 dark-cerulean bg-white-smoke dark-cerulean-border">
+                                    <div class="row" style="margin: 10px 0">
+                                        <div class="col-sm-12">
+                                            <select multiple id="gene-type-filter-select" class="form-control blockview-filter-input" size="4" title="The type of genes to filter" disabled="disabled"></select>
+                                            <hr style="margin: 10px 0 0 0; border: 1px solid grey;" />
+                                            <label class="filter-checkbox" for="gene-type-filter-radio-ref">
+                                                <input id="gene-type-filter-radio-ref" type="radio" name="gene-type-filter-radio" value="ref">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN REFERENCE
+                                            </label>&nbsp;&nbsp;
+                                            <label class="filter-checkbox" for="gene-type-filter-radio-comp">
+                                                <input id="gene-type-filter-radio-comp" type="radio" name="gene-type-filter-radio" value="comp">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN COMPARISON
+                                            </label>&nbsp;&nbsp;
+                                            <label class="filter-checkbox" for="gene-type-filter-radio-both">
+                                                <input id="gene-type-filter-radio-both" type="radio" name="gene-type-filter-radio" checked="checked" value="both">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN BOTH
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    <b>Filter Criteria 3 (FC3):</b><h6>Find Gene(s) by Ontology</h6>
+                                </label>
+                                <div class="col-sm-7 dark-cerulean bg-white-smoke dark-cerulean-border">
+                                    <div class="row" style="margin: 10px 0;">
+                                        <div class="col-sm-12">
+                                            <select id="ont-filter-select" class="form-control" title="The type of ontology to search" disabled="disabled"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 5px 0">
+                                        <div class="col-sm-12">
+                                            <input id="ont-term-filter-input" class="form-control tooltip-enabled typeahead blockview-filter-input" type="text" placeholder="ontology term" disabled="disabled"/>
+                                            <hr style="margin: 10px 0 0 0; border: 1px solid grey;" />
+                                            <label class="filter-checkbox" for="ont-filter-radio-ref">
+                                                <input id="ont-filter-radio-ref" type="radio" name="ont-filter-radio" value="ref">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN REFERENCE
+                                            </label>&nbsp;&nbsp;
+                                            <label class="filter-checkbox" for="ont-filter-radio-comp">
+                                                <input id="ont-filter-radio-comp" type="radio" name="ont-filter-radio" value="comp">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN COMPARISON
+                                            </label>&nbsp;&nbsp;
+                                            <label class="filter-checkbox" for="ont-filter-radio-both">
+                                                <input id="ont-filter-radio-both" type="radio" name="ont-filter-radio" checked="checked" value="both">
+                                                <span></span>&nbsp;&nbsp;&nbsp;&nbsp;IN BOTH
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    <b>Selection Options:</b>
+                                    <br>
+                                    (OR is default operation)
+                                </label>
+                                <div class="col-sm-7 dark-cerulean bg-white-smoke dark-cerulean-border">
+                                    <div class="row" style="margin: 10px 0; ">
+                                        <table class="table">
+                                            <tr>
+                                                <td>(</td>
+                                                <td>
+                                                    <select id="boolean-sel-1" class="form-control input-sm" style="padding: 5px; font-size:11px;" disabled="disabled">
+                                                        <option value="none">--</option>
+                                                        <option value="fc1">FC1</option>
+                                                        <option value="fc2">FC2</option>
+                                                        <option value="fc3">FC3</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <label class="filter-checkbox">
+                                                        <input type="radio" name="boolean-op-group-1" value="and-bool1">
+                                                        <span></span>&nbsp;&nbsp;&nbsp;&nbsp;<b>AND</b>
+                                                    </label>
+                                                    <br>
+                                                    <label class="filter-checkbox">
+                                                        <input type="radio" name="boolean-op-group-1" value="or-bool1" checked="checked">
+                                                        <span></span>&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <select id="boolean-sel-2" class="form-control input-sm" style="padding: 5px; font-size:11px;" disabled="disabled">
+                                                        <option value="none">--</option>
+                                                        <option value="fc1">FC1</option>
+                                                        <option value="fc2">FC2</option>
+                                                        <option value="fc3">FC3</option>
+                                                    </select>
+                                                </td>
+                                                <td>)</td>
+                                                <td class="text-center">
+                                                    <label class="filter-checkbox">
+                                                        <input type="radio" name="boolean-op-group-2" value="and-bool2">
+                                                        <span></span>&nbsp;&nbsp;&nbsp;&nbsp;<b>AND</b>
+                                                    </label>
+                                                    <br>
+                                                    <label class="filter-checkbox">
+                                                        <input type="radio" name="boolean-op-group-2" value="or-bool2" checked="checked">
+                                                        <span></span>&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <select id="boolean-sel-3" class="form-control input-sm" style="padding: 5px; font-size:11px;" disabled="disabled">
+                                                        <option value="none">--</option>
+                                                        <option value="fc1">FC1</option>
+                                                        <option value="fc2">FC2</option>
+                                                        <option value="fc3">FC3</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7">
+                                                    <button id="clear-filter-btn" class="btn btn-primary btn-blockview-filter" type="button" disabled="disabled" style="width:100px;">
+                                                        <b>CLEAR</b>
+                                                    </button>
+                                                    &nbsp;&nbsp;
+                                                    <button id="run-filter-btn" class="btn btn-primary btn-blockview-filter" type="button" disabled="disabled" style="width:100px;">
+                                                        <b>RUN</b>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div> <!-- end filter-section -->
+                </div> <!-- end left panel section -->
+
+                <div id="right-filter-section" class="col-sm-12 col-md-6">
+                    <div class="filter-section">
+                        <div class="row text-center">
+                            <div class="col-sm-12">
+                                <div style="margin-left: 20px; margin-right: 20px;">
+                                    <br>
+                                    <table id="filter-results-table" class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <td>Gene Symbol</td>
+                                                <td>Gene ID</td>
+                                                <td>Chromosome</td>
+                                                <td>Start</td>
+                                                <td>End</td>
+                                                <td>Strand</td>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <br>
+                                </div>
+							</div>
+                        </div>
+                    </div>
+                </div> <!-- end right panel section -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Block-View Filter -->

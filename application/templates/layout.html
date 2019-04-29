@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block head %}
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="description" content="">
+            <meta name="author" content="The Jackson Laboratory">
+            <link rel="icon" href="{{ url_for('static', filename='img/icon.ico') }}">
+            <title>{% block title %}The Jackson Laboratory Synteny Browser{% endblock %}</title>
+            <!-- fonts.com link for JAX custom webfonts-->
+            <link type="text/css" rel="stylesheet" href="https://fast.fonts.net/cssapi/8bec25fb-810e-4dd4-a8bb-e14d78b751c6.css">
+            <!-- webtype.com link for JAX custom webfonts-->
+            <link type="text/css" rel="stylesheet" href="https://cloud.webtype.com/css/7ec85a9a-25b2-4922-a376-56d25ca5289c.css">
+
+            <!-- DataTables styling -->
+            <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
+            <!-- JQuery ui styling; required for jquery.dataTables.min.js, jquery-ui.min.js-->
+            <link href="{{ url_for('static', filename='css/jquery-ui.css') }}" rel="stylesheet">
+            <!-- our stylesheet -->
+            <link href="{{ url_for('static', filename='css/synbrowser.css') }}" rel="stylesheet">
+
+            <!-- JQuery/Datatables resources -->
+            <script src="{{ url_for('static', filename='js/external/jquery-1.11.2.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/external/jquery-ui.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/external/jquery.dataTables.min.js') }}"></script>
+            <!-- Bootstrap resources -->
+            <script src="{{ url_for('static', filename='js/external/bootstrap.min.js') }}"></script>
+
+            <!-- used for rendering SVGs: v3.X -->
+            <script src="{{ url_for('static', filename='js/external/d3.min.js') }}"></script>
+            <!-- independent tool used to make tooltips for d3 SVGs: requires D3 v3.X. Won't work with V4 -->
+            <script src="{{ url_for('static', filename='js/external/d3.tip.v0.6.3.js') }}"></script>
+            <!-- used for search suggestions on inputs in feature and filter searches -->
+            <script src="{{ url_for('static', filename='js/external/typeahead.bundle.js') }}"></script>
+            <!-- used for Genome and Block View download functionality -->
+            <script src="{{ url_for('static', filename='js/external/saveSvgAsPng.js') }}"></script>
+
+            <script src="https://cdn.datatables.net/select/1.2.1/js/dataTables.select.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+            <!-- needed for DataTable CSV download button -->
+            <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+            <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+        {% endblock %}
+    </head>
+
+    <body>
+        {% include "sidebar.html" %}
+
+        <div class="container my-custom-container">
+            <div class="large-padding"></div>
+            <!-- BEGIN CONTENT BLOCK -->
+            {% block content %}{% endblock %}
+            <!-- END CONTENT BLOCK-->
+        </div><!--/.container -->
+
+        {% include "footer.html" %}
+
+        <script src="{{ url_for('static', filename='js/app/utils.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/app-controls.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/logger.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/species.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/colorlegend.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/featuresearch.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/data-manager.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/synblockview-browser.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/genome-view.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/app/jaxsynteny.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/app/synblockview-filter.js') }}"></script>
+    </body>
+</html>

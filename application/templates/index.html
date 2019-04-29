@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="center-content">
+    {% include "feature-search.html" %}
+
+    {% include "genome-view.html" %}
+</div>
+
+<div class="center-content">
+    {% include "block-view.html" %}
+</div>
+
+<div class="center-content">
+    {% include "filters.html" %}
+</div>
+{% endblock %}

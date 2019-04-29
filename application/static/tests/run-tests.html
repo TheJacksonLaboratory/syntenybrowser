@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Synteny Browser Tests</title>
+        <!--===== Start Core Page Dependencies =====-->
+        <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.4.1.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!--===== End Core Page Dependencies =====-->
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+        <!--===== QUnit Source (DON'T MOVE) =====-->
+        <script type="text/javascript" src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
+
+        <!--===== Start Core Testing Dependencies =====-->
+        <script type="text/javascript" src="../js/external/d3.min.js"></script>
+        <!--===== End Core Testing Dependencies =====-->
+
+        <!--===== Start Source Scripts Being Tested =====-->
+        <!-- Remember that order matters here; See README -->
+        <script type="text/javascript" src="../js/app/logger.js"></script>
+        <script type="text/javascript" src="../js/app/species.js"></script>
+        <script type="text/javascript" src="../js/app/utils.js"></script>
+        <!--===== End Source Scripts Being Tested =====-->
+
+        <!--===== Start Testing Scripts =====-->
+        <!-- Remember that these must be last; See README -->
+        <script type="text/javascript" src="tests.js"></script>
+        <!--===== Start Testing Scripts =====-->
+    </body>
+</html>
