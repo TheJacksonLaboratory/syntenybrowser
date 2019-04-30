@@ -9,7 +9,7 @@ There is a live, working version of Synteny Browser available at: [syntenybrowse
 User documentation can be found [here](http://syntenybrowser.jax.org/static/docs/SB-UserManual-050219-1006-50.pdf).
 
 ## Setting up/Running Synteny Browser Locally
-Before starting the setup process, there are 2 prerequisites:
+Before starting the setup process, there are a couple prerequisites:
 
 1. A bash terminal (Mac OS X & Linux will have this included)
 2. A version of Python installed on your machine
@@ -52,7 +52,8 @@ virtual environment using
     deactivate
 
 ## Citation
-*The JAX Synteny Browser for Mouse-Human Comparative Genomics.* 
+**The JAX Synteny Browser for Mouse-Human Comparative Genomics.**
+
 Bioinformatics; pending approval
 
 ## License
