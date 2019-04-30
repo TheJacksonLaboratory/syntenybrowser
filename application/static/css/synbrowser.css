@@ -40,6 +40,10 @@ br {
     height: 30px;
 }
 
+table#sources {
+    border-spacing: 5px 5px;
+}
+
 /* -------------------- Class Selection -------------------- */
 .text11 {
     font-size: 11px;	
@@ -83,7 +87,7 @@ br {
 
 .my-custom-container {
     width: 97%;
-    margin-left: 2%; !important;
+    margin-left: 2% !important;
 }
 
 .status-indicator {

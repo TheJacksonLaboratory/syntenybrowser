@@ -82,7 +82,7 @@ let Species;
 
                 // set AJAX back to (its default) asynchronous execution mode
                 $.ajaxSetup({"async": true});
-            };
+            }
 
             parseConfigFile();
 

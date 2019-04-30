@@ -30,7 +30,7 @@ let FeatureSearch;
         /**
          * (search term input) autocomplete setup
          * autocomplete is implemented using Twitter TypeAhead
-         * @param {string} category - selected feature search category
+         * @param {any} category - selected feature search category
          */
         SearchTermInput.prototype.autocomplete = function(category) {
             this._input.typeahead("destroy");

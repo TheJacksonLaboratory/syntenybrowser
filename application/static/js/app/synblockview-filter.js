@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 /**
  * @file: synblockview-filter.js
@@ -78,7 +78,7 @@
                 enableGeneOntTermInput();
                 enableRunFilterButton();
                 enableClearFilterButton();
-            }
+            };
 
             function enableGeneSymbolIdInput() {
                 geneSymbolIdInput.attr("disabled", false);
@@ -118,26 +118,21 @@
             }
 
             // privileged getter methods
-            this.getbockViewBrowser = function() { return blockViewBrowser; };
+            this.getblockViewBrowser = function() { return blockViewBrowser; };
             this.getfeatureSymbolsIds = function() { return featureSymbolsIds; };
             this.getfeatureTypes = function() { return featureTypes; };
-            this.getgoOntologiesMatches = function() { return matchedOnt; };
+            this.getontologyMatches = function() { return matchedOnt; };
             this.getselectionTerms = function() { return selectionTerms; };
             this.getontologies = function() { return ontologies; };
-            this.getontSearchTerms = function() { return ontSearchTerms; }
+            this.getontSearchTerms = function() { return ontSearchTerms; };
 
             this.getmatchedSymbolId = function() {
                 return matchedSymbolId;
-            }
+            };
 
             this.getmatchedTypes = function() {
                 return matchedTypes;
-            }
-
-            this.getmatchedFeatures = function() {
-                return matchedFeatures; 
             };
-
 
             this.setOntSelect = function() {
                 ontSelect.find("option").remove();
@@ -147,14 +142,13 @@
                         .text(ontologies[i].name)); 
                 }
                 this._currOnt = ontSelect.val();
-            }
+            };
 
             // in the case that there's an error, make sure that the run filter button is (re)enabled
             // so that filtering doesn't get stuck in limbo
             window.onerror = function() {
                 enableRunFilterButton();
             };
-
 
             /**
              * 
@@ -166,12 +160,13 @@
                 for(let i = 0; i < ontAbbrevs.length; i++) {
                     ontologies.push(ontAbbrevs[i]);
                 }
-            }
+            };
 
 			/**
 			*
 			* @param {string} id - one of ("fc1", "fc2", "fc3")
 			* @param {boolean} b - TRUE (if input value) or FALSE (if no input value)
+             * @param d - data
 			*/
             this.setBooleanExpOptions = function(id, b, d) {
                 let change = null;
@@ -221,7 +216,7 @@
                     }
                     return -1;
                 }
-            }
+            };
 
             // privileged setter methods
             this.setfeatureSymbolsIds = function(a) {
@@ -253,7 +248,6 @@
                 }
             };
 
-
             this.setontSearchTerms = function(arr, ont) {
                 if(!ontSearchTerms[ont]) {
                     ontSearchTerms[ont] = [];
@@ -269,7 +263,7 @@
                     }
                 }
                 // setOntInputAutoComplete(ont);
-            }
+            };
 
             this.setontMatches = function(a) {
                 matchedOnt.length = 0;
@@ -282,7 +276,6 @@
                     }
                 }
             };
-
 
             this.setmatchedFeatures = function() {
                 selectionTermsBoard.html("");
@@ -313,10 +306,9 @@
                 dt.rows().remove().draw();
                 dt.rows.add(matchedFeatures).draw();
 
-                if(this.showOnlyFilteredFeatures()) {
-                    blockViewBrowser.updateReferenceTrack();
-                    blockViewBrowser.updateComparisonTrack();
-                }
+                // update the tracks
+                blockViewBrowser.updateReferenceTrack();
+                blockViewBrowser.updateComparisonTrack();
 
                 JaxSynteny.logger.changeFilterStatus("FILTER OPERATION COMPLETE", SynUtils.finishedStatusColor);
                 enableRunFilterButton();
@@ -327,19 +319,14 @@
             ///////////////////////////////// 
             // FILTER CONTROLS EVENT HANDLERS
             /////////////////////////////////
-            $("#data-status-board-filter").click(function(event) {
-                event.preventDefault();
 
-                JaxSynteny.logger.openLog();
-            });
-
-            $("[id=hide-genome-features-cb]").change(function() {
+            FilterManager.prototype.hideNonfiltered = function() {
                 blockViewBrowser.updateReferenceTrack();
                 blockViewBrowser.updateComparisonTrack();
-            });
+            };
 
-            geneSymbolIdInput.on("change keyup copy paste cut", function() {
-                let valSymbolId = $(this).val();
+            FilterManager.prototype.updateGeneSymbolInput = function() {
+                let valSymbolId = geneSymbolIdInput.val();
                 let matchedSymbolId =  that.getmatchedSymbolId(); // an array of currently matched features
                 matchedSymbolId.length = 0; // clear previous input
                 let selectionTerms = that.getselectionTerms();
@@ -360,16 +347,15 @@
                 } else { 
                     that.setBooleanExpOptions("fc1", false, null);
                 }
-            });
+            };
 
-
-            geneTypesSelect.change(function() {
-                let selectedFeatureTypes = $(this).val();
+            FilterManager.prototype.updateGeneTypeSelect = function() {
+                let selectedFeatureTypes = geneTypesSelect.val();
                 let matchedTypes = that.getmatchedTypes(); // an array of gene IDs that match the selected type(s)
                 matchedTypes.length = 0;
                 let selectionTerms = that.getselectionTerms();
                 selectionTerms["fc2"] = null;
-	
+
                 if(selectedFeatureTypes && selectedFeatureTypes.length > 0) {
                     for(let i = 0; i < selectedFeatureTypes.length; i++) {
                         if(selectedFeatureTypes[i] === "-- no selection --") {
@@ -384,19 +370,17 @@
                 } else {
                     that.setBooleanExpOptions("fc2", false, null);
                 }
-            });
+            };
 
-
-            ontSelect.change(function() {
+            FilterManager.prototype.changeOntology = function() {
                 geneOntTermInput.val("");
 
-                setOntInputAutoComplete(that.getontSearchTerms()[$(this).val()]);
-                that._currOnt = $(this).val();
-            });
+                setOntInputAutoComplete(that.getontSearchTerms()[ontSelect.val()]);
+                that._currOnt = ontSelect.val();
+            };
 
-
-            geneOntTermInput.on("change keyup copy paste cut", function() {
-                let valOnt = $(this).val();
+            FilterManager.prototype.updateGeneOntInput = function() {
+                let valOnt = geneOntTermInput.val();
 				let selectionTerms = that.getselectionTerms();
                 // if user deletes (using backspace) any text in the input field
                 if(!valOnt) {
@@ -405,20 +389,18 @@
                     that.setmatchedFeatures();
                 } else {
                     selectionTerms["fc3"] = valOnt;
-                    that.setBooleanExpOptions("fc3", true, that.getgoOntologiesMatches());
+                    that.setBooleanExpOptions("fc3", true, that.getontologyMatches());
                 }
-            });
+            };
 
-
-            // clear the filter
-            clearFilterButton.click(function() {
+            FilterManager.prototype.clearFilter = function() {
                 let matchedSymbolId = that.getmatchedSymbolId();
                 matchedSymbolId.length = 0;
 
                 let matchedTypes = that.getmatchedTypes(); // an array of gene IDs that match the selected type(s)
                 matchedTypes.length = 0;
 
-                let matchedOnt = that.getgoOntologiesMatches();
+                let matchedOnt = that.getontologyMatches();
                 matchedOnt.length = 0;
 
                 JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
@@ -434,9 +416,9 @@
                 that.setBooleanExpOptions("fc3", false, null);
 
                 that.setmatchedFeatures();
-            });
+            };
 
-            runFilterButton.click(function() {
+            FilterManager.prototype.runFilter = function() {
                 let ontTerm = geneOntTermInput.val();
 
                 JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
@@ -444,18 +426,18 @@
                 disableRunFilterButton("RUNNING...");
 
                 if(ontTerm) {
-                    // because getOntGenes() makes an asynchronous request 
-                    // to get genes mapped to this ontology term, setmatchedFeatures() 
+                    // because getOntGenes() makes an asynchronous request
+                    // to get genes mapped to this ontology term, setmatchedFeatures()
                     // has to be called within getOntGenes() once the async request is done
                     getOntGenes(that, ontTerm, that._chrNum, that._currOnt);
                 } else {
                     // just call it from here otherwise
                     that.setmatchedFeatures();
                 }
-            });
+            };
 
             // DataTable properties
-            let dt = $("#filter-results-table").DataTable({
+            let dt = resultsTable.DataTable({
                 "data": matchedFeatures,
                 "columns": [
                     {"data": "gene_symbol"},
@@ -608,8 +590,8 @@
 
 
         FilterManager.prototype.showOnlyFilteredFeatures = function() {
-            return $("[id=hide-genome-features-cb]").is(":checked");
-        }
+            return $("#hide-genome-features-cb").is(":checked");
+        };
 
 
         /**
@@ -622,9 +604,9 @@
             that.setfeatureTypes([]);
 
             // clear html element values
-            $("[id=gene-symbol-id-filter-input]").val("");
-            $("[id=gene-type-filter-select]").find().remove();
-            $("[id=ont-term-filter-input]").val("");
+            $("#gene-symbol-id-filter-input").val("");
+            $("#gene-type-filter-select").find().remove();
+            $("#ont-term-filter-input").val("");
 
             // gik [01/07/18] TODO: (optional) clear the DataTable
         }
@@ -633,7 +615,7 @@
         /**
          * @param {Object} that 
          * @param {string} featureId - gene id of gene to get homolog id(s) for
-         * @param {Object} ...
+         * @param {Object} a - object array with homolog info
          * @return {Array} - for reference will return list of one id; for comparison,
          *                   will return the list of ids
          */
@@ -671,7 +653,7 @@
          * takes an object with just one property - o.gene_id - and appends additional properties 
          * to the same object
 		 * @param {Object} that - instance reference
-         * @param {Object}.gene_id o - an object with one property: { o.gene_id }
+         * @param {Object} o - an object with one property: { o.gene_id }
          */
         function getFeatureInfo(that, o) {
             // TODO: [gik] 01/04/18 - implement a dictionary/map for gene information look-ups instead of iterating 
@@ -739,7 +721,7 @@
         /**
          * reads user control settings and applies the rules to the passed three arrays
 		 *
-         * @param {Object[]} operandsData - ...
+         * @param operandsData - ...
          * @param {Object[]} matchedTypes - an array of features that match the selected feature type(s) 
          * @param {Object[]} matchedOnt - an array of features that match the selected ontology term
          */
@@ -884,7 +866,8 @@
          * @param {Object} that - instance reference
          */
         function setInputAutoComplete(that) {
-            $("[id=gene-symbol-id-filter-input]").typeahead("destroy");
+            let input = $("#gene-symbol-id-filter-input");
+            input.typeahead("destroy");
 
             let featureSymbolsIds = that.getfeatureSymbolsIds();
 
@@ -895,7 +878,7 @@
                     local: featureSymbolsIds
                 });
 
-                $("[id=gene-symbol-id-filter-input]").typeahead({
+                input.typeahead({
                     hint: true,
                     highlight: true,
                     minLength: 1
@@ -910,10 +893,11 @@
 
         /**
          * function: populates the typeahead suggestions list for the ontology terms input 
-         * @param {Object} that - instance reference
+         * @param {Object} data - ontology terms
          */
         function setOntInputAutoComplete(data) {
-            $("[id=ont-term-filter-input]").typeahead("destroy");
+            let input = $("#ont-term-filter-input");
+            input.typeahead("destroy");
 
             let ontTerms = data;
 
@@ -924,7 +908,7 @@
                     local: ontTerms
                 });
 
-                $("[id=ont-term-filter-input]").typeahead({
+                input.typeahead({
                     hint: true,
                     highlight: true,
                     minLength: 1
@@ -944,7 +928,7 @@
         function setSelectOptions(that) {
             let options = that.getfeatureTypes();
 
-            $("[id=gene-type-filter-select]").find().remove();
+            $("#gene-type-filter-select").find().remove();
             // setup the select's options
             d3.select("[id=gene-type-filter-select]")
                 .selectAll("option")

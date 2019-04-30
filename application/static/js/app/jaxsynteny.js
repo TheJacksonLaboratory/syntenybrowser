@@ -110,6 +110,11 @@ let JaxSynteny;
             JaxSynteny.colors = colorsComp;
 
             JaxSynteny.genomeView = new GenomeView.DataManager(blockURL);
+
+            // make sure that the block view is cleared
+            if(JaxSynteny.blockViewFilterMng.getblockViewBrowser()) {
+                JaxSynteny.blockViewFilterMng.getblockViewBrowser().cleanUp();
+            }
         }).error(function() {
             throw new Error("ERROR: Could not load the color scheme");
         });
@@ -128,4 +133,59 @@ let JaxSynteny;
 // start application execution
 $(function() {
     JaxSynteny.run();
+
+    // NOTE: this needs to be out here. it used to be in the genome view AND
+    // the data manager script but since the genome view is instantiated each
+    // time the reference species is changed, the click event is also
+    // reinstantiated resulting in the click event being triggered once for
+    // each time the reference species has been changed (which causes the
+    // multiple sets of AJAX calls, multiple loads of the block view, and
+    // often results in the block view stalling and/or erroring out)
+    $("#show-block-view").on("click", function() {
+        let msg = $("#genome-msg");
+        msg.html("");
+
+        // if there is a interval present update the reference
+        if($("#ref-genome-interval").val() !== "") {
+            JaxSynteny.dataManager.loadBlockViewBrowser();
+        }
+        else {
+            msg.html("A selection hasn't been made");
+            setTimeout(function() { msg.html(""); }, 10000);
+        }
+    });
+
+    $("#data-status-board-filter").on("click", function(event) {
+        event.preventDefault();
+
+        JaxSynteny.logger.openLog();
+    });
+
+    $("#hide-genome-features-cb").on("change", function() {
+        JaxSynteny.blockViewFilterMng.hideNonfiltered();
+    });
+
+    $("#gene-symbol-id-filter-input").on("change keyup copy paste cut", function() {
+        JaxSynteny.blockViewFilterMng.updateGeneSymbolInput();
+    });
+
+    $("#gene-type-filter-select").on("change", function() {
+          JaxSynteny.blockViewFilterMng.updateGeneTypeSelect();
+    });
+
+    $("#ont-filter-select").on("change", function() {
+          JaxSynteny.blockViewFilterMng.changeOntology();
+    });
+
+    $("#ont-term-filter-input").on("change keyup copy paste cut", function() {
+        JaxSynteny.blockViewFilterMng.updateGeneOntInput();
+    });
+
+    $("#clear-filter-btn").on("click", function() {
+        JaxSynteny.blockViewFilterMng.clearFilter();
+    });
+
+    $("#run-filter-btn").on("click", function() {
+        JaxSynteny.blockViewFilterMng.runFilter();
+    });
 });

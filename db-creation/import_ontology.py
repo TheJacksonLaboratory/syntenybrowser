@@ -10,23 +10,23 @@ def parse_args():
     # The database name (required)
     parser.add_argument('database')
     parser.add_argument('-g', '--go-obo',
-                        default='data-scripts/source-data/go-basic.obo.gz',
+                        default='data-files/go-basic.obo.gz',
                         help="Path to the go obo file.")
     parser.add_argument('-m', '--mp-obo',
-                        default='data-scripts/source-data/MPheno_OBO.ontology.gz',
+                        default='data-files/MPheno_OBO.ontology.gz',
                         help="Path to the mammalian phenotypes ontology file.")
     parser.add_argument('-d', '--do-obo',
-                        default='data-scripts/source-data/HumanDO.obo.gz',
+                        default='data-files/HumanDO.obo.gz',
                         help="Path to the human disease ontology file.")
     parser.add_argument('-H', '--human-annotations',
-                        default='data-scripts/source-data/goa_human.gaf.gz',
+                        default='data-files/goa_human.gaf.gz',
                         help="Path to human ontology annotations.")
     parser.add_argument('-M', '--mouse-annotations',
-                        default='data-scripts/source-data/gene_association.mgi.gz',
+                        default='data-files/gene_association.mgi.gz',
                         help="Path to mouse ontology annotations."
                         )
     parser.add_argument('--mouse-mp-to-gene',
-                        default='data-scripts/source-data/MouseMP_to_gene.txt.gz',
+                        default='data-files/MouseMP_to_gene.txt.gz',
                         help="Path to the file mapping mouse genes to MP terms")
     args = parser.parse_args()
     return args

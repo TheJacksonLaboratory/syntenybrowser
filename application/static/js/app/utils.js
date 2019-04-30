@@ -37,6 +37,25 @@ let SynUtils;
     };
 
     /**
+     * -- Not intended for use with object arrays -- Checks that the content of two arrays is the same
+     * @param array1
+     * @param array2
+     */
+    SynUtils.checkArrayEquivalency = function(array1, array2) {
+        if(array1.length !== array2.length) { return false; }
+
+        if(array1.length > 0) {
+            if(typeof array1[0] !== typeof array2[0]) { return false; }
+
+            for(let i = 0; i < array1.length; i++) {
+                if(array1[i] !== array2[i]) { return false; }
+            }
+        }
+
+        return true;
+    };
+
+    /**
      * compares two QTL ranges and returns the overlapping QTL (QTL creating an overlap) and the
      * endpoints for the overlap
      *
@@ -117,7 +136,7 @@ let SynUtils;
      *
      * @param {Object[]} arrobjs - an array of objects  
      * @param {string} prop - object property name
-     * @param {any} value - the value to search for
+     * @param {string} value - the value to search for
      * @return {number} - the first index of the element in the array; -1 if not found
      */
     SynUtils.indexOfObj = function(arrobjs, prop, value) {

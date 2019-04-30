@@ -12,8 +12,6 @@ let ColorLegend;
          * @param id - comparison species id
          */
         function ColorLegendFactory(id) {
-            this._species = id;
-
             this._colors = JaxSynteny.colors;
             this._compChromosomes = null;
 

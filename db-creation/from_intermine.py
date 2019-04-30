@@ -78,11 +78,11 @@ def parse_args():
         help="the SQLite3 DB file that will be created or updated")
     parser.add_argument(
         '--human-features',
-        default='data-scripts/source-data/NCBI_Human_forSynteny.gff3.gz',
+        default='data-files/NCBI_Human_forSynteny.gff3.gz',
         help="gff3 file containing human mRNA and exon annotations")
     parser.add_argument(
         '--mouse-features',
-        default='data-scripts/source-data/MGI_GenomeFeature_forSynteny.gff3.gz',
+        default='data-files/MGI_GenomeFeature_forSynteny.gff3.gz',
         help="gff3 file containing mouse mRNA and exon annotations")
     parser.add_argument(
         '--output_file', default=None,

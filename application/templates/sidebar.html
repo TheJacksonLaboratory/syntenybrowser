@@ -11,10 +11,9 @@
         <a href="{{ url_for('index') }}">SYNTENY BROWSER</a>
         <a href="{{ url_for('about') }}">ABOUT</a>
         <a href="{{ url_for('docs') }}">DOCS</a>
-        <!-- <a href="{{ url_for('license') }}">LICENSE</a> -->
     </ul>
 </header>
-
+{% if species %}
 <div id="collapsed-panel" class="settings">
     <img id="open-settings" src="{{ url_for('static', filename='img/settings-icon.png') }}">
 </div>
@@ -86,3 +85,4 @@
         </div>
     </div>
 </div>
+{% endif %}

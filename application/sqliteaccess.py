@@ -397,7 +397,7 @@ def get_species():
         yield _dictify_row(c, row)
 
 
-def get_gene_metadata(taxon_id, gene_symbol):
+def get_gene_metadata(taxon_id, gene_symbol=None):
     """
     :param taxon_id: id of the species this gene belongs to
     :param gene_symbol: unique gene symbol
@@ -406,32 +406,93 @@ def get_gene_metadata(taxon_id, gene_symbol):
     db_con = sqlite3.connect(DB_PATH)
     c = db_con.cursor()
 
-    c.execute(
-        """
-        SELECT 
-            gene_id, 
-            gene_symbol, 
-            gene_type, 
-            gene_chr AS chr,
-            gene_strand AS strand,
-            gene_start_pos AS start,
-            gene_end_pos AS end   
-        FROM gene
-        WHERE gene.gene_taxonid=? AND gene_symbol LIKE ?
-        ORDER BY gene_symbol ASC
-        """, (taxon_id, gene_symbol + "%",)
-    )
+    if gene_symbol is not None:
+        c.execute(
+            """
+            SELECT 
+                gene_id, 
+                gene_symbol, 
+                gene_type, 
+                gene_chr AS chr,
+                gene_strand AS strand,
+                gene_start_pos AS start,
+                gene_end_pos AS end   
+            FROM gene
+            WHERE gene.gene_taxonid=? AND gene_symbol LIKE ?
+            ORDER BY gene_symbol ASC
+            """, (taxon_id, gene_symbol + "%",)
+        )
+    else:
+        c.execute(
+            """
+            SELECT 
+                gene_id, 
+                gene_symbol, 
+                gene_type, 
+                gene_chr AS chr,
+                gene_strand AS strand,
+                gene_start_pos AS start,
+                gene_end_pos AS end   
+            FROM gene
+            WHERE gene.gene_taxonid=:ref_taxonid
+            ORDER BY gene_symbol ASC
+            """, {'ref_taxonid': taxon_id}
+        )
 
     for row in c:
         yield _dictify_row(c, row)
 
 
-def get_qtl_metadata(taxon_id, qtl_symbol):
+def get_qtl_metadata(taxon_id, qtl_symbol=None):
     """
     :param taxon_id: id of the species this gene belongs to
     :param qtl_symbol: unique qtl symbol
     :return: all available database information about the gene
     """
+    db_con = sqlite3.connect(DB_PATH)
+    c = db_con.cursor()
+
+    if qtl_symbol is not None:
+        c.execute(
+            """
+            SELECT 
+                id AS qtl_id,
+                name AS qtl_symbol,
+                seq_id AS chr,
+                start,
+                `end`
+            FROM feature
+            WHERE taxon_id = ? AND type = 'QTL' AND name LIKE ?
+            ORDER BY name ASC
+            """, (taxon_id, qtl_symbol + "%",)
+        )
+    else:
+        c.execute(
+            """
+            SELECT 
+                id AS qtl_id,
+                name AS qtl_symbol,
+                seq_id AS chr,
+                start,
+                `end`
+            FROM feature
+            WHERE taxon_id =:taxonid AND type = 'QTL'
+            ORDER BY name ASC
+            """, {'taxonid': taxon_id}
+        )
+
+    for row in c:
+        yield _dictify_row(c, row)
+
+
+def get_qtls_by_chr(taxon_id, chromosome):
+    """
+
+    :param taxon_id:
+    :param chromosome:
+    :return:
+    """
+
     db_con = sqlite3.connect(DB_PATH)
     c = db_con.cursor()
 
@@ -444,9 +505,9 @@ def get_qtl_metadata(taxon_id, qtl_symbol):
             start,
             `end`
         FROM feature
-        WHERE taxon_id = ? AND type = 'QTL' AND name LIKE ?
-        ORDER BY name ASC
-        """, (taxon_id, qtl_symbol + "%",)
+        WHERE taxon_id = ? AND type = 'QTL' AND seq_id LIKE ?
+        ORDER BY start ASC
+        """, (taxon_id, chromosome,)
     )
 
     for row in c:

@@ -134,10 +134,22 @@ def get_species():
     return json.dumps({'species': list(species)})
 
 
+@app.route('/genes/<taxon_id>', methods=['GET'])
+def get_all_genes(taxon_id):
+    genes = dba.get_gene_metadata(taxon_id)
+    return json.dumps({'genes': list(genes)})
+
+
 @app.route('/genes/<taxon_id>/<gene_symbol>', methods=['GET'])
 def get_genes(taxon_id, gene_symbol):
     genes = dba.get_gene_metadata(taxon_id, gene_symbol)
     return json.dumps({'genes': list(genes)})
+
+
+@app.route('/qtls/<taxon_id>', methods=['GET'])
+def get_all_qtls(taxon_id):
+    qtls = dba.get_qtl_metadata(taxon_id)
+    return json.dumps({'qtls': list(qtls)})
 
 
 @app.route('/qtls/<taxon_id>/<qtl_symbol>', methods=['GET'])
@@ -162,3 +174,9 @@ def chromsome_blocks(ref_taxonid, comp_taxonid, chr):
 def chromosome_genes(ref_taxonid, comp_taxonid, ref_chr):
     genes = dba.get_genes(ref_taxonid, ref_chr)
     return jsonify(genes=list(genes))
+
+
+@app.route('/chr-qtls/<taxon_id>/<chromosome>')
+def get_qtls_by_chr(taxon_id, chromosome):
+    qtls = dba.get_qtls_by_chr(taxon_id, chromosome)
+    return jsonify(qtls=list(qtls))

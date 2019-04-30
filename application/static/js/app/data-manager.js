@@ -14,7 +14,6 @@ let DataManager;
             // html element references
             this._input = $("#ref-genome-interval");
             this._inputnote = $("#ref-genome-interval-msg");
-            this._button = $("#update-btn");
 
             this._syntenicBlocksData = [];
 
@@ -35,7 +34,7 @@ let DataManager;
             let that = this;
 
             // html element(s) event handlers
-            this._button.on("click", function() {
+            BlockViewManager.prototype.loadBlockViewBrowser = function() {
                 // remove existing block view svg content, if any exists
                 d3.select("#block-view-svg").selectAll("*").remove();
                 d3.select("#chr-color-legend").selectAll("*").remove();
@@ -61,8 +60,17 @@ let DataManager;
                     if(interval.chr) {
                         // if it is different from the currently displayed chromosome
                         // or species (or if no chromosome has been displayed at all)
-                        if(that._chromosome === null || that._chromosome !== interval.chr ||
-                           that._refSpecies !== JaxSynteny.speciesRef.getSpeciesId()) {
+                        let newGenes = JaxSynteny.highlightedFeatures.gene;
+                        let newQTLs = JaxSynteny.highlightedFeatures.qtl;
+                        let existingGenes = that._blockViewBrowser._highlightedGenes;
+                        let existingQTLs = that._blockViewBrowser._highlightedQTLs;
+
+                        let highlightedGenesChanged = SynUtils.checkArrayEquivalency(newGenes, existingGenes);
+                        let highlightedQTLsChanged = SynUtils.checkArrayEquivalency(newQTLs, existingQTLs);
+                        let chromosomeChanged = that._chromosome === null || that._chromosome !== interval.chr;
+                        let refSpeciesChanged = that._refSpecies !== JaxSynteny.speciesRef.getSpeciesId();
+
+                        if(chromosomeChanged || refSpeciesChanged || highlightedGenesChanged || highlightedQTLsChanged) {
 
                             that._refSpecies = JaxSynteny.speciesRef.getSpeciesId();
                             that._chromosome = interval.chr;
@@ -71,12 +79,8 @@ let DataManager;
                             openSettings.animate({right: "0px"}, 500);
 
                             // load syntenic block data for rendering first
-							let data = that.loadSyntenicBlockData(that._chromosome);
-							console.log("block data import successful? " + data);
-                            if(data) {
-                                // load features data for rendering
-                                that.loadGenesData(that._chromosome);
-                            }
+                            that.loadData(that._chromosome);
+
                         } else {
                             that._blockViewBrowser.setReferenceInterval(interval);
                             that._blockViewBrowser.changeInterval("1");
@@ -87,7 +91,7 @@ let DataManager;
                 } else {
                     that._input.focus();
                     // if input isn't present make input note state the required entry
-                    if (!interval) {
+                    if(!interval) {
                         that._inputnote.html("&larr; Enter valid genome coordinates " +
                             "<br/> Eg: Chr1:10000000-20000000");
                     }
@@ -96,9 +100,12 @@ let DataManager;
                         that._inputnote.html(validator._errors[0]);
                     }
                     // hide message after 10 seconds
-                    setTimeout(function() { that._inputnote.html(""); }, 10000);
+                    setTimeout(function() {
+                        that._inputnote.html("");
+                    }, 10000);
+
                 }
-            });
+            };
 
 
             /**
@@ -106,9 +113,7 @@ let DataManager;
              */
             this.updateBlockView = function() {
                 let that = this;
-                console.log("we're gonna try packaging data to send to block view browser now");
                 if(that._syntenicBlocksData.length > 0) {
-                    console.log("welp, we got data to send, so that's good");
                     let syntenicBlocks = that._syntenicBlocksData.map(function(currBlock) {
                         return {
                             symbol: currBlock.symbol,
@@ -158,7 +163,6 @@ let DataManager;
 						comparisonFeatures: that._comparisonGeneData
 					});
 
-					console.log("ordering block view browser to render. Will they comply?");
 					// render block view browser
                     that._blockViewBrowser.render({
                         species: JaxSynteny.speciesRef.getSpeciesId(),
@@ -222,6 +226,7 @@ let DataManager;
 
             $.getJSON(geneReqUrl, function(data) {
                 console.log("gene data received");
+
                 JaxSynteny.logger.logThis("loading gene data");
                 that._blockViewBrowser.setBlockViewStatus("loading gene data", null);
 
@@ -387,7 +392,6 @@ let DataManager;
                     console.log("!!! " + dupesRemoved + " duplicated exons removed");
                 }
 
-                console.log("gene data is in");
             }).error(function() {
                 that._blockViewBrowser.setBlockViewStatus("error loading genes", "error");
                 throw new Error("ERROR: Could not find genes with the given URL");
@@ -401,7 +405,7 @@ let DataManager;
          *
          * @param {string} chromosome - chromosome to load data for
          */
-        BlockViewManager.prototype.loadSyntenicBlockData = function(chromosome) {
+        BlockViewManager.prototype.loadData = function(chromosome) {
             let that = this;
 
             let blocksReqURL = "./syntenic-blocks/"
@@ -417,6 +421,9 @@ let DataManager;
                     // data successfully loaded: print message on board
                     JaxSynteny.logger.logThis("loading block data");
                     that._blockViewBrowser.setBlockViewStatus("loading data", null);
+
+                    // get gene data
+                    that.loadGenesData(that._chromosome);
                 }
                 else {
                     that._blockViewBrowser.setBlockViewStatus("no block data", "error");
@@ -426,7 +433,6 @@ let DataManager;
                 that._blockViewBrowser.setBlockViewStatus("data couldn't be loaded", "error");
                 throw new Error("ERROR: Data couldn't be loaded from the provided URL");
             });
-            return true;
         };
 		
         return BlockViewManager;

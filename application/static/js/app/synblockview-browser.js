@@ -47,9 +47,17 @@ let BlockView;
                         matchedFeatures.push(feature);
                         matchedFeaturesId.push(feature.gene_id);
                         that._genesToHomologs[feature.gene_id].forEach(function(e) {
+                            if(e >= 0) {
+                                that._comparisonGenes.filter(function(f) {
+                                    return f.homolog_ids.indexOf(e) >= 0;
+                                }).forEach(function(f) {
+                                    matchedFeatures.push(f);
+                                    matchedFeaturesId.push(f.gene_id);
+                                });
+                            }
                             matchedFeatureHomologs.push(e)
                         });
-                    })
+                    });
                 }
             };
 
@@ -300,6 +308,7 @@ let BlockView;
             that._syntenicBlocks = params.syntenicBlocks;
             that._referenceToComparison = params.referenceToComparison;
             that._referenceGenes = params.referenceData;
+            that._comparisonGenes = params.comparisonData;
             that._homologIds = params.homologToGenes;
             that._genesToHomologs = params.genesToHomologs;
 
@@ -316,6 +325,32 @@ let BlockView;
                 .range([0, that._width]);
         };
 
+        /**
+         * clears the entire svg canvas - removes all elements
+         */
+        BlockViewBrowser.prototype.cleanUp = function () {
+            let that = this;
+
+            that._blockView.selectAll("*").remove();
+            if(that._referenceFeatureGeneIndicators) {
+                that._referenceFeatureGeneIndicators.selectAll("*").remove();
+            }
+            // that._speciesLabels.selectAll("*").remove();
+
+            // every time the block view is rendered, remove all existing tooltips
+            // otherwise, they'll stack up
+            d3.select("body").selectAll(".block-view").remove();
+
+            //make the path commands an empty list so they don't continually add anchors
+            that._anchorPathCommands = [];
+            that._highlightedGenes = [];
+            that._highlightedQTLs = [];
+
+            JaxSynteny.logger.changeAllStatus("no data loaded", "rgb(153,153,153)");
+
+            if(that._colorlegend) { that._colorlegend.cleanUp(); }
+        };
+
         ////////////////////////////////////////////////////////////////////////
         // Core Functions
         ////////////////////////////////////////////////////////////////////////
@@ -328,8 +363,6 @@ let BlockView;
         BlockViewBrowser.prototype.render = function(params) {
             let that = this;
 
-            console.log("Yes, we hear you loud and clear. Rendering on the way... over");
-
             if(typeof params === "undefined") {
                 that.setBlockViewStatus("missing data", "error");
                 throw new Error("The parameters required to render the block view are missing");
@@ -340,7 +373,7 @@ let BlockView;
             that.setBlockViewStatus("rendering", null);
 
             // clean up before rendering to ensure a blank canvas
-            cleanUp(that);
+            that.cleanUp();
 
             // chromosome navigation controls buttons
             blockViewNavigation(that);
@@ -686,8 +719,8 @@ let BlockView;
                     }
             });
 
-            // bind zooming behavior to the reference overview
-            that._referenceOverview.call(that._zoomOverlay);
+            // bind zooming behavior to the reference overview, disable scroll zooming
+            that._referenceOverview.call(that._zoomOverlay).on("wheel.zoom", null);
         };
 
         /**
@@ -1380,8 +1413,8 @@ let BlockView;
                 })
                 .on("zoomend", function() { isZoomable = true; });
 
-            // reference group zoom binding
-            that._tracks.call(that._zoomTracks);
+            // reference group zoom binding, disable scroll zooming
+            that._tracks.call(that._zoomTracks).on("wheel.zoom", null);
 
         };
 
@@ -2193,12 +2226,19 @@ let BlockView;
                         .attr("visibility", "visible");
                 }
                 else {
-                    // show only highlighted labels, if any
+                    // show highlighted labels, if any
                     that._highlightedGenes.forEach(function(e) {
                         visible.selectAll("text")
                             .filter(function(f) { return (f.homolog_id === e) })
                             .attr("visibility", "visible");
-                    })
+                    });
+
+                    // show filtered labels, if any
+                    that.getmatchedFilterFeatures().forEach(function(e) {
+                        visible.selectAll("text")
+                            .filter(function(f) { return f.gene_id === e.gene_id; })
+                            .attr("visibility", "visible");
+                    });
                 }
             }
             else {
@@ -2238,10 +2278,16 @@ let BlockView;
             let visibleFeatures = [];
             if(showOnlyFilteredFeatures) {
                 visibleFeatures = that.getmatchedFilterFeaturesId().slice();
+
                 // genome view selected genes must be visible (if positioned in view)
                 JaxSynteny.highlightedFeatures.gene.forEach(function(e) {
-                    // it is ok if some ids repeat (since they might be in the filtered gene list as well)
-                    visibleFeatures.push(e.gene_id);
+                    // push the comparison homologs of the highlighted features to be marked to be kept visible
+                    if(that._referenceToComparison[e.gene_id]) {
+                        let comparisonFeatures = that._referenceToComparison[e.gene_id].homologs
+                            .map(function(g) { return g.gene_id; });
+
+                        visibleFeatures.push(...comparisonFeatures);
+                    }
                 });
             }
 
@@ -2275,7 +2321,7 @@ let BlockView;
                         .attr("visibility", "visible");
                 }
                 else {
-                    // show only highlighted labels, if any
+                    // show highlighted labels, if any
                     that._highlightedGenes.forEach(function(e) {
                         visible.selectAll("text")
                             .filter(function(f) {
@@ -2287,7 +2333,14 @@ let BlockView;
                                 return isHighlighted
                             })
                             .attr("visibility", "visible");
-                    })
+                    });
+
+                    // show filtered labels, if any
+                    that.getmatchedFilterFeatures().forEach(function(e) {
+                        visible.selectAll("text")
+                            .filter(function(f) { return f.gene_id === e.gene_id; })
+                            .attr("visibility", "visible");
+                    });
                 }
             }
             else {
@@ -3089,11 +3142,13 @@ let BlockView;
                 .attr("fill", function(d) {
                     // all comparison gene elements need to iterate through array of HOMOLOG_IDS not homolog_id
                     let color = "black";
-                    d.homolog_ids.forEach(function(e) {
+                    if(d.homolog_ids) {
+                        d.homolog_ids.forEach(function(e) {
                             if(color === "black") {
                                 color = getFeatureColor(that, e);
                             }
                         });
+                    }
                     return color;
                 });
             // highlight any reference track genes
@@ -3107,26 +3162,6 @@ let BlockView;
         // Helper Methods
         ////////////////////////////////////////////////////////////////////////
         /**
-         * clears the entire svg canvas - removes all elements
-         */
-        function cleanUp(that) {
-            that._blockView.selectAll("*").remove();
-            if(that._referenceFeatureGeneIndicators) {
-                that._referenceFeatureGeneIndicators.selectAll("*").remove();
-            }
-            // that._speciesLabels.selectAll("*").remove();
-
-            // every time the block view is rendered, remove all existing tooltips
-            // otherwise, they'll stack up
-            d3.select("body").selectAll(".block-view").remove();
-
-            //make the path commands an empty list so they don't continually add anchors
-            that._anchorPathCommands = [];
-            that._highlightedGenes = [];
-            that._highlightedQTLs = [];
-        }
-
-        /**
          * returns viewport's width
          *
          * @return {number} - width of viewport
@@ -3139,9 +3174,9 @@ let BlockView;
          * displays user message updates during application execution
          *
          * @param {string} msg - string containing the message
-         * @param {string} [status] - possible values are either "error" or null
+         * @param {string|null} [status] - possible values are either "error" or null
          */
-        BlockViewBrowser.prototype.setBlockViewStatus = function(msg, status) {
+        BlockViewBrowser.prototype.setBlockViewStatus = function(msg, status = null) {
             if(status === "error") {
                 JaxSynteny.logger.changeAllStatus(msg, SynUtils.errorStatusColor)
             }

@@ -4,8 +4,14 @@
                 <div class="row">
                     <div class="col-xs-0 col-md-1"></div>
                     <div class="col-xs-12 col-md-10">
+                        <h3><span class="glyphicon glyphicon-th-list" style="font-size: 0.8em;"></span> User Manual</h3>
+                        <p>
+                            Use <a href="{{ url_for('static', filename='docs/SB-UserManual-050219-1006-50.pdf') }}">this link</a>
+                            to access JAX Synteny Browser's user manual in PDF.
+                        </p>
+
                         <h3><span class="glyphicon glyphicon-folder-open" style="font-size: 0.8em;"></span> Data Sources and Formats</h3>
-                        <table class="table table-compact table-bordered" cellspacing="5" cellpadding="5">
+                        <table id="sources" class="table table-compact table-bordered">
                             <thead>
                                 <tr>
                                     <th class="left">Data Type</th>
@@ -16,7 +22,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="left"><b>1. Syntenyc Relationships</b></td>
+                                    <td class="left"><b>1. Syntenic Relationships</b></td>
                                     <td class="left"></td>
                                     <td class="left"></td>
                                     <td class="left"></td>
@@ -126,14 +132,9 @@
                                     <td class="left"><a href="">MouseMP_to_gene.txt</a></td>
                                     <td class="left">custom</td>
                                     <td class="left">MGI</td>
-                                </td>
+                                </tr>
                             </tbody>
                         </table>
-                        
-                        <h3><span class="glyphicon glyphicon-th-list" style="font-size: 0.8em;"></span> User Manual</h3>
-                        <p>
-                            Use <a href="{{ url_for('static', filename='docs/SB-UserManual-050219-1006-50.pdf') }}">this link</a> to access JAX Synteny Browser's user manual in PDF.
-                        </p>
                     </div>
                     <div class="col-xs-0 col-md-1"></div>
                 </div>

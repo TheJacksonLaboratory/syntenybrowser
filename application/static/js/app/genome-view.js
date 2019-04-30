@@ -82,15 +82,6 @@ let GenomeView;
         }
 
         /**
-         * gets genome data from the plot to send to external objects
-         *
-         * @return {Object} - genome data
-         */
-        DataManager.prototype.getGenomeData = function() {
-            return this.genomeView.getGenomeData();
-        };
-
-        /**
          * allows external objects to trigger an update to the plot
          */
         DataManager.prototype.identifySelectedFeatures = function() {
@@ -150,15 +141,6 @@ let GenomeView;
                 let newHeight = $("#genome-view-svg").height() + 25;
                 $(".custom-panel-body").height(newHeight);
             }
-        };
-
-        /**
-         * returns genome data used to render and transform genome plot
-         *
-         * @return {Object} - genome data used to render and transform genome plot
-         */
-        CircosPlot.prototype.getGenomeData = function() {
-            return {reference: this.referenceData, comparison: this.comparisonData, numCompChr: this.numCompChr};
         };
 
         /**
@@ -257,21 +239,6 @@ let GenomeView;
             let that = this;
 
             $("#show-block-view").prop('disabled', true);
-
-            // genome view "view" button
-            $("#show-block-view").on("click", function() {
-                let msg = $("#genome-msg");
-                msg.html("");
-
-                // if there is a interval present update the reference
-                if($("#ref-genome-interval").val() !== "") {
-                    $("#update-btn").click();
-                }
-                else {
-                    msg.html("A selection hasn't been made");
-                    setTimeout(function() { msg.html(""); }, 10000);
-                }
-            });
 
             // genome view clear button
             $("#clear-genome-view").on("click", function() {
@@ -373,8 +340,6 @@ let GenomeView;
             //create and render the inner and outer plots
             this.outerPlot = new GenomeView.OuterPlot(this.referenceData, this.svg);
             this.innerPlot = new GenomeView.InnerPlot(this.comparisonData, this.svg);
-
-            this.numCompChr = this.genomeData.comparisonChrSizes.length;
 
             this.outerPlot.render();
             this.innerPlot.render();

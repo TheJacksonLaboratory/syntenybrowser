@@ -45,9 +45,4 @@ def index():
                     'name': data_loaded['organism']['name'],
                 })
 
-    return flask.render_template('index.html', species = species[:2])
-
-
-@app.route('/license.html')
-def license():
-    return flask.render_template('license.html')
+    return flask.render_template('index.html', species=species)
