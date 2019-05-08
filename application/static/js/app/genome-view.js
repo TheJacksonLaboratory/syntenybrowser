@@ -33,52 +33,51 @@ let GenomeView;
                 $('#searchterm').val("");
                 $('#ref-genome-interval').val("");
             });
+        }
 
-            // gather input from user and export svg to png file with entered name
-            $("#save-genome-view").on("click", function() {
-                let thisButton = $("#save-genome-view");
+        DataManager.prototype.downloadGenomeView = function() {
+            let thisButton = $("#save-genome-view");
 
-                //disable button and change state
-                thisButton.prop("disabled", true);
-                thisButton.html("Downloading...");
+            //disable button and change state
+            thisButton.prop("disabled", true);
+            thisButton.html("Downloading...");
 
-                // get current margin top so we can reset it after download
-                let genomeViewMarginTop = d3.select("#genome-view-svg").style("margin-top");
-                let genomeViewHeight = d3.select("#genome-view-svg").attr("viewBox").split(" ")[3];
-                console.log(genomeViewHeight);
+            // get current margin top so we can reset it after download
+            let genomeViewMarginTop = d3.select("#genome-view-svg").style("margin-top");
+            let genomeViewHeight = d3.select("#genome-view-svg").attr("viewBox").split(" ")[3];
+            console.log(genomeViewHeight);
 
-                // svg download functionality can't work with display none and any margin top, so reset these
-                d3.select("#genome-view-legend").style("display", "block");
-                d3.select("#genome-view-svg").style("margin-top", 0);
+            // svg download functionality can't work with display none and any margin top, so reset these
+            d3.select("#genome-view-legend").style("display", "block");
+            d3.select("#genome-view-svg").style("margin-top", 0);
 
-                d3.select("#genome-view-svg").append("text")
-                    .attr("id", "genome-view-citation")
-                    .attr("transform", "translate(10, " + (genomeViewHeight - 15) + ")")
-                    .text("JAX Synteny Browser, The Jackson Laboratory, http://syntenybrowserpublic.jax.org/");
+            d3.select("#genome-view-svg").append("text")
+                .attr("id", "genome-view-citation")
+                .attr("transform", "translate(10, " + (genomeViewHeight - 15) + ")")
+                .text("JAX Synteny Browser, The Jackson Laboratory, http://syntenybrowserpublic.jax.org/");
 
-                // get svgs
-                let genomeViewSVG = document.getElementById("genome-view-svg");
-                let genomeViewLegend = document.getElementById("genome-view-legend");
+            // get svgs
+            let genomeViewSVG = document.getElementById("genome-view-svg");
+            let genomeViewLegend = document.getElementById("genome-view-legend");
 
-                // get user's file name
-                let enteredFileName = $("#genome-file-name").val();
+            // get user's file name
+            let enteredFileName = $("#genome-file-name").val();
 
-                // download the svgs
-                saveSvgAsPng(genomeViewSVG, (enteredFileName + ".png"));
-                saveSvgAsPng(genomeViewLegend, (enteredFileName + "-legend.png"));
+            // download the svgs
+            saveSvgAsPng(genomeViewSVG, (enteredFileName + ".png"));
+            saveSvgAsPng(genomeViewLegend, (enteredFileName + "-legend.png"));
 
-                // reset predownload svg settings
-                d3.select("#genome-view-legend").style("display", "none");
-                d3.select("#genome-view-svg").style("margin-top", genomeViewMarginTop);
-                d3.select("#genome-view-citation").remove();
+            // reset predownload svg settings
+            d3.select("#genome-view-legend").style("display", "none");
+            d3.select("#genome-view-svg").style("margin-top", genomeViewMarginTop);
+            d3.select("#genome-view-citation").remove();
 
-                // hide modal after save
-                $("#genome-set-file-name").modal("hide");
+            // hide modal after save
+            $("#genome-set-file-name").modal("hide");
 
-                //re-enable button and change state
-                thisButton.prop("disabled", false);
-                thisButton.html("Save");
-            });
+            //re-enable button and change state
+            thisButton.prop("disabled", false);
+            thisButton.html("Save");
         }
 
         /**
@@ -232,6 +231,18 @@ let GenomeView;
                 });
         };
 
+        CircosPlot.prototype.clearGenomeView = function() {
+            // clear interval
+            $("#ref-genome-interval").val("");
+
+            that.outerPlot.clean();
+            that.innerPlot.clean();
+            JaxSynteny.highlightedFeatures.qtl = [];
+            JaxSynteny.highlightedFeatures.gene = [];
+
+            $("#show-block-view").prop('disabled', true);
+        };
+
         /**
          * sets the button and click event behaviors
          */
@@ -240,22 +251,8 @@ let GenomeView;
 
             $("#show-block-view").prop('disabled', true);
 
-            // genome view clear button
-            $("#clear-genome-view").on("click", function() {
-                // clear interval
-                $("#ref-genome-interval").val("");
-
-                that.outerPlot.clean();
-                that.innerPlot.clean();
-                JaxSynteny.highlightedFeatures.qtl = [];
-                JaxSynteny.highlightedFeatures.gene = [];
-
-                $("#show-block-view").prop('disabled', true);
-            });
-
             // selection of a chromosome
             this.svg.selectAll(".outer").on("click", function(d) {
-
                 // get the block bands for the chr render those blocks in the inner plot
                 let refBands = that.outerPlot.getRefBlockBands(d.chr);
                 let blocks = that.getChrBlocks(d.chr, refBands.blockBands, refBands.chrBand);

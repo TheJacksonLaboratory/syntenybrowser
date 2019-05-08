@@ -176,6 +176,16 @@ $(function() {
     });
 
 
+    // Genome View event handling
+    $("#save-genome-view").on("click", function() {
+        JaxSynteny.genomeView.downloadGenomeView();
+    });
+
+    $("#clear-genome-view").on("click", function() {
+        JaxSynteny.genomeView.genomeView.clearGenomeView();
+    });
+
+
     // Block view browser event handling
     $("#save-block-view").on("click", function() {
         JaxSynteny.blockViewFilterMng.getblockViewBrowser().downloadBrowser();
