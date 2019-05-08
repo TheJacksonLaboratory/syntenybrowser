@@ -45,9 +45,9 @@
                 "search_type":"OntAnnotation"
             },
             {
-                "name":"DO",
+                "name":"DOID",
                 "value":"Disease Ontology (DO)",
-                "search_example":"DO term (e.g. dynein)",
+                "search_example":"DO term (e.g. reticular dysgenesis)",
                 "search_type":"OntAnnotation"
             }
         ],

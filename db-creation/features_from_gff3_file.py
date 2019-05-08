@@ -21,6 +21,8 @@ def parse_args():
                         help='Path to the gff3 file to load.')
     parser.add_argument('taxonid',
                         help='Taxon ID for the features being loaded.')
+    parser.add_argument('-c', '--create', action='store_true',
+                        help='Creates new database tables (after dropping any pre-existing tables).')
     args = parser.parse_args()
     return args
 
@@ -138,7 +140,8 @@ def load_file(db_con, filepath, taxon_id):
     }
 
     types_not_currently_used = {
-        'mRNA',
+        'miRNA_Cluster',
+        'mRNA'
         'exon',
         'pseudogene',
         'pseudogenic_transcript',
@@ -220,7 +223,8 @@ def load_file(db_con, filepath, taxon_id):
 def main():
     args = parse_args()
     db_con = sqlite3.connect(args.database)
-    create_tables(db_con)
+    if args.create:
+        create_tables(db_con)
     load_file(db_con, args.filepath, args.taxonid)
 
 

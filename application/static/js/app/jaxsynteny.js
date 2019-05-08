@@ -78,14 +78,14 @@ let JaxSynteny;
         JaxSynteny.speciesComp = new Species.Species(compFileName);
 
         // updates to Feature Search Panel elements and properties
-        // 
+
         // search term input, feature search categories, search button
-        let searchTermInput = new FeatureSearch.SearchTermInput();
+        JaxSynteny.searchTerm = new FeatureSearch.SearchTermInput();
 
-        let searchCategoriesSelect = new FeatureSearch.SearchCategories(searchTermInput);
-        searchCategoriesSelect.populate(JaxSynteny.speciesRef);
+        JaxSynteny.searchType = new FeatureSearch.SearchCategories(JaxSynteny.searchTerm);
+        JaxSynteny.searchType.populate(JaxSynteny.speciesRef);
 
-        new FeatureSearch.SearchButton(searchCategoriesSelect, searchTermInput);
+        JaxSynteny.searchButton = new FeatureSearch.SearchButton(JaxSynteny.searchType, JaxSynteny.searchTerm);
 
         JaxSynteny.highlightedFeatures = {
             qtl: [],
@@ -113,6 +113,7 @@ let JaxSynteny;
 
             // make sure that the block view is cleared
             if(JaxSynteny.blockViewFilterMng.getblockViewBrowser()) {
+                JaxSynteny.blockViewFilterMng.cleanup();
                 JaxSynteny.blockViewFilterMng.getblockViewBrowser().cleanUp();
             }
         }).error(function() {
@@ -121,10 +122,7 @@ let JaxSynteny;
 
 
         // updates to Block View Filter Panel elements and properties
-        JaxSynteny.blockViewFilterMng.setOntologies(
-            JaxSynteny.speciesRef.ontologies);
-
-        JaxSynteny.blockViewFilterMng.setOntSelect();
+        JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies());
 
         $(document).ajaxStop(function() { });
     }
@@ -155,6 +153,36 @@ $(function() {
         }
     });
 
+
+    // Feature search event handling
+    $("#searchterm").keyup(function(event) {
+        if(event.keyCode === 13) {
+            // close the typeahead suggestions menu
+            $(".tt-menu").css("display", "none");
+            $("#feature-search-btn").click();
+        }
+    });
+
+    $("#searchterm").on("input", function() {
+        $("#search-msg").html("");
+    });
+
+    $("#feature-search-btn").on("click", function() {
+        JaxSynteny.searchButton.search()
+    });
+
+    $("#feature-search-categories").on("change", function() {
+        JaxSynteny.searchButton.updateCategory();
+    });
+
+
+    // Block view browser event handling
+    $("#save-block-view").on("click", function() {
+        JaxSynteny.blockViewFilterMng.getblockViewBrowser().downloadBrowser();
+    });
+
+
+    // Block view filtering event handling
     $("#data-status-board-filter").on("click", function(event) {
         event.preventDefault();
 
@@ -188,4 +216,27 @@ $(function() {
     $("#run-filter-btn").on("click", function() {
         JaxSynteny.blockViewFilterMng.runFilter();
     });
+
+    $(".ont-radio input").on("change", function(e) {
+        let changeTo = e.target.value;
+
+        if(changeTo === 'comp') {
+            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesComp.ontologies);
+        } else if(changeTo === 'ref') {
+            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesRef.ontologies);
+        } else if(changeTo === 'both') {
+            JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies());
+        }
+    });
 });
+
+function getCommonOntologies() {
+        let refAbbrevs = JaxSynteny.speciesRef.ontologies.map(function(o) { return o.abbrev; });
+        let compAbbrevs = JaxSynteny.speciesComp.ontologies.map(function(o) { return o.abbrev; });
+
+        let bothAbbrevs = refAbbrevs.filter(function(o) { return compAbbrevs.indexOf(o) >= 0; });
+        return bothAbbrevs.map(function(a) {
+            // there should only be one match
+            return JaxSynteny.speciesRef.ontologies.filter(function(o) { return o.abbrev === a; })[0];
+        });
+    }

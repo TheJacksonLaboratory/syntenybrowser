@@ -177,10 +177,11 @@ let BlockView;
             /////////////////////////////////////////
             // when the window changes size, since panel size won't adjust, adjust it manually
             window.onresize = that.resizeBlockViewPanel;
+        }
 
-            // gather input from user and export svg to png file with entered name
-            $("#save-block-view").on("click", function() {
-                let thisButton = $("#save-block-view");
+        // gather input from user and export svg to png file with entered name
+        BlockViewBrowser.prototype.downloadBrowser = function() {
+            let thisButton = $("#save-block-view");
 
                 //disable button and change state
                 thisButton.prop("disabled", true);
@@ -218,10 +219,7 @@ let BlockView;
                     thisButton.prop("disabled", false);
                     thisButton.html("Save");
                 }, 500);
-
-
-            });
-        }
+        };
 
         ////////////////////////////////////////////////////////////////////////
         // Set Up
@@ -330,6 +328,8 @@ let BlockView;
          */
         BlockViewBrowser.prototype.cleanUp = function () {
             let that = this;
+
+            that.setmatchedFilterFeatures([]);
 
             that._blockView.selectAll("*").remove();
             if(that._referenceFeatureGeneIndicators) {

@@ -52,7 +52,10 @@ let FeatureSearch;
             suggestions = new Bloodhound({
                     datumTokenizer: Bloodhound.tokenizers.obj.whitespace(tokenizer),
                     queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: url
+                    prefetch: {
+                        url: url,
+                        ttl: 5000 // hypothetically, this ttl will cause the prefetch localStorage to clear every 5 min
+                    }
                 });
  
             this._input.typeahead({
@@ -127,24 +130,7 @@ let FeatureSearch;
 
             that._searchResultsTable = FeatureSearch.SearchResultsTable.getInstance(that); // singleton
 
-            // remove binded behaviors from previous versions of the table, if present
-            this.term.off("keyup");
-
-            // triggers search on enter keystroke
-            this.term.keyup(function(event) {
-                if(event.keyCode === 13) {
-                    // close the typeahead suggestions menu
-                    $(".tt-menu").css("display", "none");
-                    // start the search
-                    that._button.click();
-                }
-            });
-
-            // must remove any previously binded click node events
-            // otherwise multiple clicks will be fired
-            this._button.off("click");
-            // button onclick event handler
-            this._button.on("click", function() {
+            SearchButton.prototype.search = function() {
                 let cat = that._featureCategory.getVal();
                 let term = that._searchTermInput.getVal();
                 let msg = $("#search-msg");
@@ -152,7 +138,7 @@ let FeatureSearch;
                 // clear any current error messages
                 msg.html("");
 
-                // if no search term has been provided, display the error message for 10 sec or 
+                // if no search term has been provided, display the error message for 10 sec or
                 // till the user enters some input
                 if(term === "") {
                     msg.html("Search term is required");
@@ -171,22 +157,15 @@ let FeatureSearch;
                         throw new Error("Could not instantiate object.");
                     }
                 }
-            });
+            };
 
-            // feature category select onchange event handler
-            that._featureCategory.node().on("change", function() {
+            SearchButton.prototype.updateCategory = function() {
                 // run cleanup: table search results, search term input text, etc...
                 that._searchResultsTable.cleanup();
 
                 // update search term input placeholder value
-                that._featureCategory.update($(this).val());
-            });
-
-            // clear any error messages when the input is changed
-            that._searchTermInput.node().on("input", function() {
-                let msg = $("#search-msg");
-                msg.html("");
-            });
+                that._featureCategory.update($("#feature-search-categories").val());
+            };
         }
 
         /**
@@ -405,19 +384,11 @@ let FeatureSearch;
             }
         }
     }
-	
-    /**
-     * Search
-     */
+
     let Search = function(category, searchTerm) {
         return new SearchResult(ConstructSearchTable, category, searchTerm);
     };
 
-
-    /**
-     * 
-     *
-     */
     let SearchResult = function(execute, category, term) {
         this.execute = execute;
         this.category = category;

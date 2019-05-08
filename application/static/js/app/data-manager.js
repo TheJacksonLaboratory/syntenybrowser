@@ -65,8 +65,8 @@ let DataManager;
                         let existingGenes = that._blockViewBrowser._highlightedGenes;
                         let existingQTLs = that._blockViewBrowser._highlightedQTLs;
 
-                        let highlightedGenesChanged = SynUtils.checkArrayEquivalency(newGenes, existingGenes);
-                        let highlightedQTLsChanged = SynUtils.checkArrayEquivalency(newQTLs, existingQTLs);
+                        let highlightedGenesChanged = !SynUtils.checkArrayEquivalency(newGenes, existingGenes);
+                        let highlightedQTLsChanged = !SynUtils.checkArrayEquivalency(newQTLs, existingQTLs);
                         let chromosomeChanged = that._chromosome === null || that._chromosome !== interval.chr;
                         let refSpeciesChanged = that._refSpecies !== JaxSynteny.speciesRef.getSpeciesId();
 
@@ -225,8 +225,6 @@ let DataManager;
             let comparisonGenes = [];
 
             $.getJSON(geneReqUrl, function(data) {
-                console.log("gene data received");
-
                 JaxSynteny.logger.logThis("loading gene data");
                 that._blockViewBrowser.setBlockViewStatus("loading gene data", null);
 
@@ -389,7 +387,7 @@ let DataManager;
                     }
                 });
                 if(dupesRemoved > 0) {
-                    console.log("!!! " + dupesRemoved + " duplicated exons removed");
+                    //console.log("!!! " + dupesRemoved + " duplicated exons removed");
                 }
 
             }).error(function() {
@@ -414,7 +412,6 @@ let DataManager;
                 + "/" + chromosome + "-blocks.json";
 
             $.getJSON(blocksReqURL, function(data) {
-                console.log("block data recieved");
                 if(data.blocks.length > 0) {
                     that._syntenicBlocksData = data.blocks;
 

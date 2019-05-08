@@ -162,6 +162,12 @@
                 }
             };
 
+            this.updateOntologies = function(onts) {
+                this.setOntologies(onts);
+                this.setOntSelect();
+                geneOntTermInput.val("");
+            };
+
 			/**
 			*
 			* @param {string} id - one of ("fc1", "fc2", "fc3")
@@ -462,6 +468,25 @@
                 "processing": true,
                 "dom": '<"top"<Bf><"pull-right"i>>rt<"bottom"p><"clear">' 
             });
+
+            /**
+             * deletes data (from data structures used for filtering)
+             */
+            FilterManager.prototype.cleanup = function() {
+                let that = this;
+                // clear the data arrays from any previously stored data
+                that.setfeatureSymbolsIds([]);
+                that.setfeatureTypes([]);
+
+                // clear html element values
+                $("#gene-symbol-id-filter-input").val("");
+                $("#gene-type-filter-select").find().remove();
+                $("#ont-term-filter-input").val("");
+
+                // if there isn't any block view, set all status bars to no data loaded, because there isn't any data
+                JaxSynteny.logger.changeAllStatus("no data loaded", "rgb(153,153,153)");
+                dt.rows().remove().draw();
+            };
         }
 
         /**
@@ -472,7 +497,7 @@
          */
         FilterManager.prototype.loadData = function(d) {
             let that = this;
-			cleanup(that);
+			that.cleanup();
 
             let symbolIds = [];
             let types = [];
@@ -592,24 +617,6 @@
         FilterManager.prototype.showOnlyFilteredFeatures = function() {
             return $("#hide-genome-features-cb").is(":checked");
         };
-
-
-        /**
-         * deletes data (from data structures used for filtering)
-         * @param {Object} that - reference to the current instance
-         */
-        function cleanup(that) {
-            // clear the data arrays from any previously stored data
-            that.setfeatureSymbolsIds([]);
-            that.setfeatureTypes([]);
-
-            // clear html element values
-            $("#gene-symbol-id-filter-input").val("");
-            $("#gene-type-filter-select").find().remove();
-            $("#ont-term-filter-input").val("");
-
-            // gik [01/07/18] TODO: (optional) clear the DataTable
-        }
 
 
         /**

@@ -78,11 +78,11 @@ def parse_args():
         help="the SQLite3 DB file that will be created or updated")
     parser.add_argument(
         '--human-features',
-        default='data-files/NCBI_Human_forSynteny.gff3.gz',
+        default='data-scripts/data-files/NCBI_Human_forSynteny.gff3.gz',
         help="gff3 file containing human mRNA and exon annotations")
     parser.add_argument(
         '--mouse-features',
-        default='data-files/MGI_GenomeFeature_forSynteny.gff3.gz',
+        default='data-scripts/data-files/MGI_GenomeFeature_forSynteny.gff3.gz',
         help="gff3 file containing mouse mRNA and exon annotations")
     parser.add_argument(
         '--output_file', default=None,
@@ -226,21 +226,22 @@ def import_genes(service, db_con):
     query.add_constraint('organism.taxonId', 'ONE OF',
                          ['10090', '9606'], code='A')
     for row in query.rows():
-        c.execute(
-            '''INSERT INTO gene (gene_id, gene_taxonid, gene_symbol,
-                                 gene_chr, gene_start_pos, gene_end_pos,
-                                 gene_strand, gene_type)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
-            (
-                row['primaryIdentifier'],
-                int(row['organism.taxonId']),
-                row['symbol'],
-                row['chromosome.primaryIdentifier'],
-                int(row['chromosomeLocation.start']),
-                int(row['chromosomeLocation.end']),
-                row['chromosomeLocation.strand'],
-                row['mgiType'],
-            )
+        if row["symbol"] is not None and row["mgiType"] is not None:
+            c.execute(
+                '''INSERT INTO gene (gene_id, gene_taxonid, gene_symbol,
+                                     gene_chr, gene_start_pos, gene_end_pos,
+                                     gene_strand, gene_type)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                (
+                    row['primaryIdentifier'],
+                    int(row['organism.taxonId']),
+                    row['symbol'],
+                    row['chromosome.primaryIdentifier'],
+                    int(row['chromosomeLocation.start']),
+                    int(row['chromosomeLocation.end']),
+                    row['chromosomeLocation.strand'],
+                    row['mgiType'],
+                )
         )
 
 
@@ -636,10 +637,6 @@ def main():
 
     print("Importing genes")
     import_genes(service, db_con)
-
-    # Currently loading from a file, not intermine.
-    # print("Importing homologs")
-    # import_homologs(service, db_con, args.output_file)
 
     print("Importing mouse features into transcripts and exons tables")
     import_gff_annotations(args.mouse_features, 10090, db_con)

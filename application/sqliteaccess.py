@@ -858,11 +858,11 @@ def get_gt_assoc_info(taxon_id, gene_list):
     :param:
     :param:
     :return:
-	"""
+    """
     db_conn = sqlite3.connect(DB_PATH)
     cursor = db_conn.cursor()
     gene_names = gene_list.split("|")
-	
+
     cursor.execute(
         '''
             SELECT DISTINCT gene_type 
@@ -870,7 +870,7 @@ def get_gt_assoc_info(taxon_id, gene_list):
                 WHERE gene_symbol IN ({seq})
         '''.format(seq=','.join(['?']*len(gene_names))), gene_names
     )
-	
+
     for row in cursor:
         yield _dictify_row(cursor, row)
 

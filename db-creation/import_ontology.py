@@ -10,24 +10,26 @@ def parse_args():
     # The database name (required)
     parser.add_argument('database')
     parser.add_argument('-g', '--go-obo',
-                        default='data-files/go-basic.obo.gz',
+                        default='data-scripts/data-files/go-basic.obo.gz',
                         help="Path to the go obo file.")
     parser.add_argument('-m', '--mp-obo',
-                        default='data-files/MPheno_OBO.ontology.gz',
+                        default='data-scripts/data-files/MPheno_OBO.ontology.gz',
                         help="Path to the mammalian phenotypes ontology file.")
     parser.add_argument('-d', '--do-obo',
-                        default='data-files/HumanDO.obo.gz',
+                        default='data-scripts/data-files/HumanDO.obo.gz',
                         help="Path to the human disease ontology file.")
     parser.add_argument('-H', '--human-annotations',
-                        default='data-files/goa_human.gaf.gz',
-                        help="Path to human ontology annotations.")
+                        default='data-scripts/data-files/goa_human.gaf.gz',
+                        help="Path to the file mapping human genes to GO terms.")
     parser.add_argument('-M', '--mouse-annotations',
-                        default='data-files/gene_association.mgi.gz',
-                        help="Path to mouse ontology annotations."
-                        )
+                        default='data-scripts/data-files/gene_association.mgi.gz',
+                        help="Path to the file mapping mouse genes to GO terms.")
     parser.add_argument('--mouse-mp-to-gene',
-                        default='data-files/MouseMP_to_gene.txt.gz',
-                        help="Path to the file mapping mouse genes to MP terms")
+                        default='data-scripts/data-files/MouseMP_to_gene.txt.gz',
+                        help="Path to the file mapping mouse genes to MP terms.")
+    parser.add_argument('-D', '--do-annotations',
+                        default='data-scripts/data-files/MGI_DO.rpt.gz',
+                        help='Path to the file mapping both mouse and human genes to DO terms.')
     args = parser.parse_args()
     return args
 
@@ -302,6 +304,46 @@ def import_mouse_mp_ontology_genes(fname, taxonid, db_con):
                 VALUES (?, ?, ?)''', (parts[0], parts[2], taxonid))
 
 
+def associate_disease_ontology(fname, db_con):
+    """
+
+    :param fname: file to process
+    :param db_con: connection to the database.
+    :return: None.
+    """
+    c = db_con.cursor()
+    with flex_open(fname) as f:
+        # skip first (header) line
+        next(f)
+
+        for line in f:
+            line = line.strip()
+            if line[0] == '!':
+                continue
+            components = line.split("\t")
+            gene_taxonid = None
+            # mouse records have one extra TAB (this is how the source flat
+            # file has been generated and we don't have control over it)
+            if components[5] == '10090':
+                gene_id = components[8]
+                gene_taxonid = int(components[5])
+            elif components[5] == '9606':
+                gene_id = components[7]
+                gene_taxonid = int(components[5])
+            gene_ontology_id = components[0]
+
+            if gene_taxonid is not None:
+                c.execute(
+                    '''INSERT INTO gene_ontology_map VALUES(?, ? ,?) ''',
+                    (
+                        gene_id,
+                        gene_ontology_id,
+                        gene_taxonid,
+                    )
+                )
+
+
+
 
 def main():
     args = parse_args()
@@ -315,6 +357,7 @@ def main():
     import_gene_ontology(args.mouse_annotations, 10090, db_con)
     import_gene_ontology(args.human_annotations, 9606, db_con)
     import_mouse_mp_ontology_genes(args.mouse_mp_to_gene, 10090, db_con)
+    associate_disease_ontology(args.do_annotations, db_con)
     save_is_a(db_con)
 
     db_con.commit()
