@@ -351,12 +351,25 @@ def main():
 
     create_tables(db_con)
 
+    print("\tLoading GO ontology terms")
     import_ontology(args.go_obo, db_con)
+
+    print("\tLoading MP ontology terms")
     import_ontology(args.mp_obo, db_con)
+
+    print("\tLoading DO ontology terms")
     import_ontology(args.do_obo, db_con)
+
+    print("\tLoading GO annotations for mouse")
     import_gene_ontology(args.mouse_annotations, 10090, db_con)
+
+    print("\tLoading GO annotations for human")
     import_gene_ontology(args.human_annotations, 9606, db_con)
+
+    print("\tLoading MP annotations for mouse")
     import_mouse_mp_ontology_genes(args.mouse_mp_to_gene, 10090, db_con)
+
+    print("\tLoading DO annotations for human")
     associate_disease_ontology(args.do_annotations, db_con)
     save_is_a(db_con)
 

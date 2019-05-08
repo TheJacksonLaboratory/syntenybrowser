@@ -1,4 +1,4 @@
-## Introduction
+# JAX Synteny Browser
 An interactive web-based conserved synteny browser application, The Jackson Laboratory (JAX) Synteny Browser. The browser 
 allows researchers to highlight or selectively display genome features in the reference and/or the comparison genomes 
 based on the biological attributes of the features. The current implementation for the browser supports the reference 
@@ -8,8 +8,8 @@ There is a live, working version of Synteny Browser available at: [syntenybrowse
 
 User documentation can be found [here](http://syntenybrowser.jax.org/static/docs/SB-UserManual_v1.pdf).
 
-## Setting up/Running Synteny Browser Locally
-###Prerequisites
+# Setting up/Running Synteny Browser Locally
+### Prerequisites
 Before starting the setup process, you'll need:
 
 1. A bash terminal (Mac OS X & Linux will have this included) or a way of running shell scripts
@@ -27,16 +27,16 @@ directory (all of the following commands are run from this directory unless othe
 *Note: if you're running Python 3, you may have to run `pip3 install virtualenv`.*
 
 
+### Getting a Database
 Once Virtualenv is installed, you'll need a database. To do this, you have two options:
 
-**Option 1: Download a preloaded database**
-
+##### Option 1: Download a preloaded database
 A ready-made database is available from Box [here](https://thejacksonlaboratory.box.com/s/i7ru2r9mx2dmzx5m0mbb5w80l6ovd6az)
 named 'syntenybrowser-db.zip' and, when decompressed, will yield a file named 'synteny.db'. **This .db file will need to be
 located in the root `syntenybrowser/` directory before running the application, otherwise the application will not run.**
 
-**Option 2: Load a database yourself**
-*(if you went with Option 1, skip down to step where you make a virtual environment running Python2.7)*
+##### Option 2: Load a database yourself
+*(if you went with Option 1, skip to 'Setup the Application')*
 
 First you'll need a virtual environment that runs in Python3.6:
 
@@ -59,8 +59,11 @@ directory (the database file needs to be located here so don't move it). Shut do
 
     deactivate
 
-Next, you'll need to get the application running using your new database. To do this, we'll need a separate virtual
-environment that runs in Python2.7:
+
+### Setting Up the Application
+Next, you'll need to get the application running using your new database (if you're at this step and haven't gotten a
+database using one of the two available options listed above, you'll need to do that first). To do this, we'll need a
+separate virtual environment that runs in Python2.7:
 
     virtualenv venv-app -p python2.7
     
@@ -71,18 +74,10 @@ Once created, activate the virtual environment:
 Install necessary packages:
     
     pip install -r requirements.txt
-    
-Run the application:
 
-    python runserver.py
-    
-When the server prints the location where the app is being served from (which should be `http://localhost:5001`), go to
-the specified address to use the app. Once you're done running the app, you can shut down the virtual environment:
 
-    deactivate
-
-### If you've already set up the local application and are coming back to it:
-To get the application running, activate the application virtual environment:
+### Running the Application
+Make sure the the application virtual environment is running. If it isn't, start it up (if it is, skip to the next step):
 
     . venv-app/bin/activate
 
@@ -93,6 +88,7 @@ Run the application:
 When finished, shut down the virtual environment:
 
     deactivate
+
 
 ## Citation
 **The JAX Synteny Browser for Mouse-Human Comparative Genomics.**

@@ -8,12 +8,8 @@ genome-specific, so are not accommodated here.
 This program creates and populates database tables:
  - gene
  - transcript
- - exon
- - homolog
- - syntenic_block
-
-Data for homology, synteny and genes come from mousemine.
-Data for transcripts and exons come from local gff3 files.
+ - exons
+ - syntenic blocks
 """
 from itertools import permutations
 from intermine.webservice import Service
@@ -627,20 +623,19 @@ def main():
     service = Service('http://www.mousemine.org/mousemine/service')
     db_con = sqlite3.connect(args.synteny_db)
 
-    print("Creating tables.")
     create_tables(db_con)
 
-    print("Importing syntenic blocks.")
+    print("\tGetting syntenic blocks")
     import_syntenic_blocks(service, db_con)
 
-    print("Importing genes")
+    print("\tGetting genes")
     import_genes(service, db_con)
 
-    print("Importing mouse features into transcripts and exons tables")
+    print("\tGetting mouse feature transcripts and exons")
     import_gff_annotations(args.mouse_features, 10090, db_con)
     db_con.commit()
 
-    print("Importing human features into transcripts and exons tables")
+    print("\tGetting human features transcripts and exons")
     import_gff_annotations(args.human_features, 9606, db_con)
     db_con.commit()
 
