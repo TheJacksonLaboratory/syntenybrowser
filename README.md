@@ -30,15 +30,14 @@ directory (all of the following commands are run from this directory unless othe
 ### Getting a Database
 Once Virtualenv is installed, you'll need a database. To do this, you have two options:
 
-##### Option 1: Download a preloaded database
+#### Option 1: Download a preloaded database
 A ready-made database is available from Box [here](https://thejacksonlaboratory.box.com/s/i7ru2r9mx2dmzx5m0mbb5w80l6ovd6az)
 named 'syntenybrowser-db.zip' and, when decompressed, will yield a file named 'synteny.db'. **This .db file will need to be
 located in the root `syntenybrowser/` directory before running the application, otherwise the application will not run.**
 
-##### Option 2: Load a database yourself
-*(if you went with Option 1, skip to 'Setup the Application')*
-
-First you'll need a virtual environment that runs in Python3.6:
+#### Option 2: Load a database yourself
+*(if you went with Option 1, skip to 'Setting Up the Application')* To load your own database, you'll need a virtual
+environment that runs in Python3.6:
 
     virtualenv venv-db -p python3.6
 

@@ -1,10 +1,10 @@
 ### Synteny Browser Application Directory
 This directory contains all files for the Synteny Browser web application, including the Python backend and Javascript/
-HTML/CSS frontend. All directions to running this application on your local machine can be found [here](../README.md).
+HTML/CSS frontend. All directions to run this application on your local machine can be found [here](../README.md).
 
 ### Third Pary Resources
 We included some third party tools to add functionality to Synteny Browser. Here's what we currently use and where you
-can find more on them
+can find more on them.
 
 - Datatables: [docs](https://datatables.net/manual/index)
 - JQuery: [docs](http://api.jquery.com/)
