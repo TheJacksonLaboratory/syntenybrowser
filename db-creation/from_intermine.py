@@ -78,11 +78,11 @@ def parse_args():
         help="the SQLite3 DB file that will be created or updated")
     parser.add_argument(
         '--human-features',
-        default='data-scripts/data-files/NCBI_Human_forSynteny.gff3.gz',
+        default='db-creation/data-files/NCBI_Human_forSynteny.gff3.gz',
         help="gff3 file containing human mRNA and exon annotations")
     parser.add_argument(
         '--mouse-features',
-        default='data-scripts/data-files/MGI_GenomeFeature_forSynteny.gff3.gz',
+        default='db-creation/data-files/MGI_GenomeFeature_forSynteny.gff3.gz',
         help="gff3 file containing mouse mRNA and exon annotations")
     parser.add_argument(
         '--output_file', default=None,
@@ -626,8 +626,6 @@ def main():
 
     service = Service('http://www.mousemine.org/mousemine/service')
     db_con = sqlite3.connect(args.synteny_db)
-
-    # FIXME: Reenable all the disabled steps!
 
     print("Creating tables.")
     create_tables(db_con)

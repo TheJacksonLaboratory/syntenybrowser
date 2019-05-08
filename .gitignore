@@ -1,3 +1,8 @@
 .idea/*
 **.idea/*
 **.DS_Store
+**.pyc
+**/__pycache__/*
+synteny.db
+venv-app/*
+venv-db/*

@@ -1,8 +1,8 @@
 import json
 import flask
 import os
-from synbrowser import app
-from synbrowser import sqliteaccess as dba
+from application import app
+from application import sqliteaccess as dba
 
 
 @app.route('/about.html')

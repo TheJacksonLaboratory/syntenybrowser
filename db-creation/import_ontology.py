@@ -10,25 +10,25 @@ def parse_args():
     # The database name (required)
     parser.add_argument('database')
     parser.add_argument('-g', '--go-obo',
-                        default='data-scripts/data-files/go-basic.obo.gz',
+                        default='db-creation/data-files/go-basic.obo.gz',
                         help="Path to the go obo file.")
     parser.add_argument('-m', '--mp-obo',
-                        default='data-scripts/data-files/MPheno_OBO.ontology.gz',
+                        default='db-creation/data-files/MPheno_OBO.ontology.gz',
                         help="Path to the mammalian phenotypes ontology file.")
     parser.add_argument('-d', '--do-obo',
-                        default='data-scripts/data-files/HumanDO.obo.gz',
+                        default='db-creation/data-files/HumanDO.obo.gz',
                         help="Path to the human disease ontology file.")
     parser.add_argument('-H', '--human-annotations',
-                        default='data-scripts/data-files/goa_human.gaf.gz',
+                        default='db-creation/data-files/goa_human.gaf.gz',
                         help="Path to the file mapping human genes to GO terms.")
     parser.add_argument('-M', '--mouse-annotations',
-                        default='data-scripts/data-files/gene_association.mgi.gz',
+                        default='db-creation/data-files/gene_association.mgi.gz',
                         help="Path to the file mapping mouse genes to GO terms.")
     parser.add_argument('--mouse-mp-to-gene',
-                        default='data-scripts/data-files/MouseMP_to_gene.txt.gz',
+                        default='db-creation/data-files/MouseMP_to_gene.txt.gz',
                         help="Path to the file mapping mouse genes to MP terms.")
     parser.add_argument('-D', '--do-annotations',
-                        default='data-scripts/data-files/MGI_DO.rpt.gz',
+                        default='db-creation/data-files/MGI_DO.rpt.gz',
                         help='Path to the file mapping both mouse and human genes to DO terms.')
     args = parser.parse_args()
     return args

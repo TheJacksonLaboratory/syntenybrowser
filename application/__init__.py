@@ -5,6 +5,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-from synbrowser import jsonAPI
-from synbrowser import views
+import jsonAPI
+import views
 
