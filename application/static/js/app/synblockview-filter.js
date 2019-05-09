@@ -433,7 +433,7 @@
                 let ontTerm = geneOntTermInput.val();
 
                 JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
-                disableClearFilterButton(null);
+                //disableClearFilterButton(null);
                 disableRunFilterButton("RUNNING...");
 
                 if(ontTerm) {
@@ -902,6 +902,7 @@
                 }
             }
 
+            console.log(res);
             return res;
         }
 		

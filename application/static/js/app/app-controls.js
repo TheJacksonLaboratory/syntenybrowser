@@ -42,6 +42,20 @@
                 }
             });
 
+            $("#update-btn").on("click", function() {
+                let msg = $("#ref-genome-interval-msg");
+                msg.html("");
+
+                // if there is a interval present update the reference
+                if($("#ref-genome-interval").val() !== "") {
+                    JaxSynteny.dataManager.loadBlockViewBrowser();
+                }
+                else {
+                    msg.html("Please enter a valid interval");
+                    setTimeout(function() { msg.html(""); }, 10000);
+                }
+            });
+
             $("#bv-true-orientation").on("click", function() {
                 if(blockview) {
                     if ($("#bv-true-orientation").is(":checked")) {
