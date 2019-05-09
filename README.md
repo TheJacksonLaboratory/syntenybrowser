@@ -94,7 +94,7 @@ When finished, shut down the virtual environment:
 ## Citation
 **The JAX Synteny Browser for Mouse-Human Comparative Genomics.**
 
-Bioinformatics; pending approval
+Manuscript in review
 
 ## License
 The JAX Synteny Browser is provided under the license found [here](LICENSE.md).
