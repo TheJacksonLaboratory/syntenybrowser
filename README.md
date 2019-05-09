@@ -10,7 +10,8 @@ User documentation can be found [here](http://syntenybrowser.jax.org/static/docs
 
 # Setting up/Running Synteny Browser Locally
 ### Prerequisites
-Before starting the setup process, you'll need:
+*Note: if you are running Windows some of the commands below might need to be altered* Before starting the setup process,
+you'll need:
 
 1. A bash terminal (Mac OS X & Linux will have this included) or a way of running shell scripts
 2. A version of Python installed on your machine
@@ -53,6 +54,7 @@ Run the database creation script with the required parameter:
 
     ./create_database.sh synteny.db
 
+*Note: we have found that one of the scripts that queries data from an API can run into issues if you are using a VPN*
 This will take several minutes and when it's finished, it will yield a file named 'synteny.db' in root `syntenybrowser/`
 directory (the database file needs to be located here so don't move it). Shut down the `venv-db` virtual environment:
 
