@@ -46,17 +46,31 @@ let BlockView;
                     filteredFeatures.forEach(function(feature) {
                         matchedFeatures.push(feature);
                         matchedFeaturesId.push(feature.gene_id);
-                        that._genesToHomologs[feature.gene_id].forEach(function(e) {
-                            if(e >= 0) {
-                                that._comparisonGenes.filter(function(f) {
-                                    return f.homolog_ids.indexOf(e) >= 0;
-                                }).forEach(function(f) {
-                                    matchedFeatures.push(f);
-                                    matchedFeaturesId.push(f.gene_id);
-                                });
-                            }
-                            matchedFeatureHomologs.push(e)
-                        });
+                        if(feature.species === "r") {
+                           that._genesToHomologs[feature.gene_id].forEach(function(e) {
+                                if(e >= 0) {
+                                    that._comparisonGenes.filter(function(f) {
+                                        return f.homolog_ids.indexOf(e) >= 0;
+                                    }).forEach(function(f) {
+                                        matchedFeatures.push(f);
+                                        matchedFeaturesId.push(f.gene_id);
+                                    });
+                                }
+                                matchedFeatureHomologs.push(e);
+                            });
+                        } else {
+                            that._referenceGenes.filter(function(f) {
+                                let homs = f.gene.homolog_genes;
+                                return homs.length > 0 &&
+                                    homs.map(function(h) { return h.gene_id; }).indexOf(feature.gene_id) >= 0;
+                            }).forEach(function(f) {
+                                f.species = "r";
+                                matchedFeatures.push(f);
+                                matchedFeaturesId.push(f.gene_id);
+
+                                matchedFeatureHomologs.push(f.homolog_id);
+                            });
+                        }
                     });
                 }
             };
@@ -3262,9 +3276,9 @@ let BlockView;
          * @return {string} - element's coloring
          */
         function getFeatureColor(that, homolog_id) {
-            if(isInHighlightedFeaturesList(that._highlightedGenes, homolog_id)) { return "red"; }
-
             if(isInFilteredFeaturesList(that.getmatchedFilterFeatureHomologs(), homolog_id)) { return "blue"; }
+
+            if(isInHighlightedFeaturesList(that._highlightedGenes, homolog_id)) { return "red"; }
 
             return "black";
         }

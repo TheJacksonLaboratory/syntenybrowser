@@ -840,11 +840,11 @@ def get_genes_labeled_with_term(taxon_id, ont_id, ont_term):
                 gene.gene_symbol,
                 gene.gene_type 
             FROM gene 
-                INNER JOIN gene_ontology_map as gom
-                INNER JOIN on_terms as ot
+                INNER JOIN gene_ontology_map as gom 
+                    ON (gene.gene_symbol = gom.gene_id OR gene.gene_id = gom.gene_id)
+                INNER JOIN on_terms as ot 
+                    ON gom.ontology_id = ot.id
                 WHERE gene.gene_taxonid = ?
-                    AND (gene.gene_symbol = gom.gene_id OR gene.gene_id = gom.gene_id)
-                    AND gom.ontology_id = ot.id
                     AND gom.ontology_id IN ({seq})
         '''.format(seq=','.join(['?']*len(parent_terms))), t
     )
@@ -858,11 +858,11 @@ def get_gt_assoc_info(taxon_id, gene_list):
     :param:
     :param:
     :return:
-    """
+	"""
     db_conn = sqlite3.connect(DB_PATH)
     cursor = db_conn.cursor()
     gene_names = gene_list.split("|")
-
+	
     cursor.execute(
         '''
             SELECT DISTINCT gene_type 
@@ -870,7 +870,7 @@ def get_gt_assoc_info(taxon_id, gene_list):
                 WHERE gene_symbol IN ({seq})
         '''.format(seq=','.join(['?']*len(gene_names))), gene_names
     )
-
+	
     for row in cursor:
         yield _dictify_row(cursor, row)
 

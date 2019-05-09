@@ -116,13 +116,12 @@ let JaxSynteny;
                 JaxSynteny.blockViewFilterMng.cleanup();
                 JaxSynteny.blockViewFilterMng.getblockViewBrowser().cleanUp();
             }
+
+            // updates to Block View Filter Panel elements and properties
+            JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies());
         }).error(function() {
             throw new Error("ERROR: Could not load the color scheme");
         });
-
-
-        // updates to Block View Filter Panel elements and properties
-        JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies());
 
         $(document).ajaxStop(function() { });
     }
@@ -231,11 +230,11 @@ $(function() {
         let changeTo = e.target.value;
 
         if(changeTo === 'comp') {
-            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesComp.ontologies);
+            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesComp.ontologies, changeTo);
         } else if(changeTo === 'ref') {
-            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesRef.ontologies);
+            JaxSynteny.blockViewFilterMng.updateOntologies(JaxSynteny.speciesRef.ontologies, changeTo);
         } else if(changeTo === 'both') {
-            JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies());
+            JaxSynteny.blockViewFilterMng.updateOntologies(getCommonOntologies(), changeTo);
         }
     });
 });
