@@ -786,16 +786,15 @@ def get_qtl_info(taxon_id, name):
         yield _dictify_row(c, row)
 
 
-def get_genes_labeled_with_term(taxon_id, ont_id, ont_term):
+def get_species_genes_labeled_with_term(taxon_id, ont_id, ont_term):
     """
-    Finds information about genes associated with the given ontology term.
+        Finds information about genes associated with the given ontology term.
 
-    The search is recursive
-    :param: taxon_id: NCBI taxonomy id (i.e. 9606, 10090, ...)
-    :param: ont_id: ontology abbreviation symbol (i.e. MP, DO, GO, ...)
-    :param: ont_term: gene ontology term
-    :return: a list of dictionaries each containing information about an ontology term - gene pair
-    """
+        :param: taxon_id: NCBI taxonomy id (i.e. 9606, 10090, ...)
+        :param: ont_id: ontology abbreviation symbol (i.e. MP, DO, GO, ...)
+        :param: ont_term: gene ontology term
+        :return: a list of dictionaries each containing information about an ontology term - gene pair
+        """
     db_conn = sqlite3.connect(DB_PATH)
 
     cursor = db_conn.cursor()
@@ -823,34 +822,114 @@ def get_genes_labeled_with_term(taxon_id, ont_id, ont_term):
     for i in range(0, n):
         do_search(parent_terms[i], parent_terms, db_conn)
 
-    query_vals = [taxon_id]
-    query_vals.extend(parent_terms)
-    t = tuple(query_vals)
+    unique_parents = list(set(parent_terms))
+
+    if len(parent_terms) > 0:
+        query_vals = [taxon_id]
+        query_vals.extend(unique_parents)
+        t = tuple(query_vals)
+
+        cursor.execute(
+            '''
+                SELECT DISTINCT gom.ontology_id,
+                    ot.name,
+                    gene.gene_id,
+                    gene.gene_chr,
+                    gene.gene_taxonid,
+                    gene.gene_start_pos,
+                    gene.gene_end_pos,
+                    gene.gene_strand,
+                    gene.gene_symbol,
+                    gene.gene_type 
+                FROM gene 
+                    INNER JOIN gene_ontology_map as gom 
+                        ON (gene.gene_symbol = gom.gene_id OR gene.gene_id = gom.gene_id)
+                    INNER JOIN on_terms as ot 
+                        ON gom.ontology_id = ot.id
+                    WHERE gene.gene_taxonid = ?
+                        AND gom.ontology_id IN ({seq})
+            '''.format(seq=','.join(['?']*len(unique_parents))), t
+        )
+
+        genes = []
+
+        for row in cursor:
+            genes.append(_dictify_row(cursor, row))
+
+        return genes
+    else:
+        return []
+
+
+def get_genes_labeled_with_term(ont_id, ont_term):
+    """
+    Finds information about genes associated with the given ontology term.
+
+    :param: ont_id: ontology abbreviation symbol (i.e. MP, DO, GO, ...)
+    :param: ont_term: gene ontology term
+    :return: a list of dictionaries each containing information about an ontology term - gene pair
+    """
+    db_conn = sqlite3.connect(DB_PATH)
+
+    cursor = db_conn.cursor()
+    search_symbols = (ont_id + ":%", "%" + ont_term + "%", "%" + ont_term + "%")
 
     cursor.execute(
         '''
-            SELECT DISTINCT gom.ontology_id,
-                ot.name,
-                gene.gene_id,
-                gene.gene_chr,
-                gene.gene_taxonid,
-                gene.gene_start_pos,
-                gene.gene_end_pos,
-                gene.gene_strand,
-                gene.gene_symbol,
-                gene.gene_type 
-            FROM gene 
-                INNER JOIN gene_ontology_map as gom 
-                    ON (gene.gene_symbol = gom.gene_id OR gene.gene_id = gom.gene_id)
-                INNER JOIN on_terms as ot 
-                    ON gom.ontology_id = ot.id
-                WHERE gene.gene_taxonid = ?
-                    AND gom.ontology_id IN ({seq})
-        '''.format(seq=','.join(['?']*len(parent_terms))), t
+            SELECT DISTINCT ot.id, ot.name
+            FROM on_terms AS ot
+                INNER JOIN gene_ontology_map as otm
+                    ON id = ontology_id  
+            WHERE ot.id LIKE ? 
+                AND (ot.id LIKE ? OR ot.name LIKE ?) 
+        ''', search_symbols
     )
 
+    parent_terms = []
+
     for row in cursor:
-        yield _dictify_row(cursor, row)
+        parent_terms.append(row[0])
+
+    n = len(parent_terms)
+
+    for i in range(0, n):
+        do_search(parent_terms[i], parent_terms, db_conn)
+
+    unique_parents = list(set(parent_terms))
+
+    if len(parent_terms) > 0:
+        query_vals = unique_parents
+        t = tuple(query_vals)
+
+        cursor.execute(
+            '''
+                SELECT DISTINCT gom.ontology_id,
+                    ot.name,
+                    gene.gene_id,
+                    gene.gene_chr,
+                    gene.gene_taxonid,
+                    gene.gene_start_pos,
+                    gene.gene_end_pos,
+                    gene.gene_strand,
+                    gene.gene_symbol,
+                    gene.gene_type 
+                FROM gene 
+                    INNER JOIN gene_ontology_map as gom 
+                        ON (gene.gene_symbol = gom.gene_id OR gene.gene_id = gom.gene_id)
+                    INNER JOIN on_terms as ot 
+                        ON gom.ontology_id = ot.id
+                    WHERE gom.ontology_id IN ({seq})
+            '''.format(seq=','.join(['?']*len(unique_parents))), t
+        )
+
+        genes = []
+
+        for row in cursor:
+            genes.append(_dictify_row(cursor, row))
+
+        return genes
+    else:
+        return []
 
 
 def get_gt_assoc_info(taxon_id, gene_list):

@@ -432,16 +432,34 @@
             FilterManager.prototype.runFilter = function() {
                 let ontTerm = geneOntTermInput.val();
 
-                JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
-                //disableClearFilterButton(null);
-                disableRunFilterButton("RUNNING...");
-
                 if(ontTerm) {
                     // because getOntGenes() makes an asynchronous request
                     // to get genes mapped to this ontology term, setmatchedFeatures()
                     // has to be called within getOntGenes() once the async request is done
-                    getOntGenes(that, ontTerm, that._chrNum, that._currOnt);
+                    let ontChildCountUrl = "./count-ont-children/" + that._currOnt + "/" + ontTerm + ".json";
+                    let msg = $("#ontology-search-msg");
+                    msg.html("");
+
+                    $.getJSON(ontChildCountUrl)
+                        .done(function(data) {
+                            // use threshold = 500
+                            if(data.num_children > 500) {
+                                // clear any current error messages
+                                msg.html("The ontology term you entered is too broad, please enter a more specific term");
+                            } else {
+                                JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
+                                //disableClearFilterButton(null);
+                                disableRunFilterButton("RUNNING...");
+
+                                getOntGenes(that, ontTerm, that._chrNum, that._currOnt);
+                            }
+                        });
+
                 } else {
+                    JaxSynteny.logger.changeFilterStatus("OPERATION IN PROGRESS", SynUtils.processingStatusColor);
+                    //disableClearFilterButton(null);
+                    disableRunFilterButton("RUNNING...");
+
                     // just call it from here otherwise
                     that.setmatchedFeatures();
                 }
@@ -637,7 +655,8 @@
             // JaxSynteny.dataManager._homologIds - set private and access via method
             let index = JaxSynteny.dataManager._genesToHomologs[featureId];
             if(species === 'comp') {
-                // homplog ids - genes are supposed to have one homolog, but just in case use an array
+                if(JaxSynteny.dataManager._homologIds[index]) {
+                    // homplog ids - genes are supposed to have one homolog, but just in case use an array
                 let homologIds = JaxSynteny.dataManager._homologIds[index].comparison;
                 // [gik] 01/10/18 TODO: set private and access via method
                 let d = JaxSynteny.dataManager._comparisonGeneData;
@@ -659,8 +678,10 @@
                         }
                     }
                 });
+                }
             } else {
-                // homplog ids - genes are supposed to have one homolog, but just in case use an array
+                if(JaxSynteny.dataManager._homologIds[index]) {
+                  // homplog ids - genes are supposed to have one homolog, but just in case use an array
                 let homologIds = JaxSynteny.dataManager._homologIds[index].reference;
                 // [gik] 01/10/18 TODO: set private and access via method
                 let d = JaxSynteny.dataManager._referenceGeneData;
@@ -682,6 +703,7 @@
                         }
                     }
                 });
+                }
             }
 
         }
@@ -728,10 +750,7 @@
 
         function getOntGenes(that, searchTerm, chromosome, ont) {
             let speciesKey = that.getontologySearchSpecies();
-
-            if(speciesKey === 'comp') {
-                let searchURL = "./ont-info/" + JaxSynteny.speciesComp.getSpeciesId() + "/" + ont + "/" + searchTerm + ".json";
-                let regions = that.getblockViewBrowser()._syntenicBlocks.map(function(b) {
+            let regions = that.getblockViewBrowser()._syntenicBlocks.map(function(b) {
                     let points = b.trueAnchorPoints.compAnchorPoints.anchorPoints;
                     return {
                         chr: b.trueAnchorPoints.compAnchorPoints.chr,
@@ -740,11 +759,16 @@
                         end: points[points.length - 1]};
                 });
 
-                let matchedOntFeatures = [];
+            let matchedOntFeatures = [];
+
+            if(speciesKey === 'comp') {
+                let searchURL = "./ont-info/" + JaxSynteny.speciesComp.getSpeciesId() + "/" + ont + "/" + searchTerm + ".json";
+
                 $.getJSON(searchURL)
                     .fail(function() {
                         JaxSynteny.logger.changeFilterStatus("problem getting ontologies", SynUtils.errorStatusColor);
-                    }).done(function(data) {
+                    })
+                    .done(function(data) {
                         data.forEach(function(d) {
                             let syntenic = regions.filter(function(r) {
                                 return r.chr === d.gene_chr && d.gene_start_pos >= r.start && d.gene_end_pos <= r.end;
@@ -765,17 +789,27 @@
                                 getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'ref');
                             }
                         });
-                        that.setontMatches(matchedOntFeatures);
+                        let uniqueMatched = [];
+
+                        // there may be repeats so get rid of repeats
+                        matchedOntFeatures.forEach(function(f) {
+                            let uniqueMatchedIDs = uniqueMatched.map(function(um) { return um.gene_id; });
+                            if(uniqueMatchedIDs.indexOf(f.gene_id) < 0) {
+                                uniqueMatched.push(f);
+                            }
+                        });
+
+                        that.setontMatches(uniqueMatched);
                         that.setmatchedFeatures();
                     });
-            } else {
+            } else if(speciesKey === 'ref') {
                 let searchURL = "./ont-info/" + JaxSynteny.speciesRef.getSpeciesId() + "/" + ont + "/" + searchTerm + ".json";
 
-                let matchedOntFeatures = [];
                 $.getJSON(searchURL)
                     .fail(function() {
                         JaxSynteny.logger.changeFilterStatus("problem getting ontologies", SynUtils.errorStatusColor);
-                    }).done(function(data) {
+                    })
+                    .done(function(data) {
                         data.forEach(function(d) {
                             if(d.gene_chr === chromosome) {
                                 matchedOntFeatures.push({
@@ -791,7 +825,78 @@
                                 getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'comp');
                             }
                         });
-                        that.setontMatches(matchedOntFeatures);
+                        let uniqueMatched = [];
+
+                        // there may be repeats so get rid of repeats
+                        matchedOntFeatures.forEach(function(f) {
+                            let uniqueMatchedIDs = uniqueMatched.map(function(um) { return um.gene_id; });
+                            if(uniqueMatchedIDs.indexOf(f.gene_id) < 0) {
+                                uniqueMatched.push(f);
+                            }
+                        });
+
+                        that.setontMatches(uniqueMatched);
+                        that.setmatchedFeatures();
+                    });
+            } else {
+                let searchURL = "./ont-info/" + ont + "/" + searchTerm + ".json";
+
+                $.getJSON(searchURL)
+                    .fail(function() {
+                        JaxSynteny.logger.changeFilterStatus("problem getting ontologies", SynUtils.errorStatusColor);
+                    })
+                    .done(function(data) {
+                        data.forEach(function(d) {
+                            // if it's a reference gene, mark it as such
+                            if(d.gene_taxonid === JaxSynteny.speciesRef.getSpeciesId()) {
+                                if(d.gene_chr === chromosome) {
+                                    matchedOntFeatures.push({
+                                        "chr": d.gene_chr,
+                                        "end_pos": d.gene_end_pos,
+                                        "gene_id": d.gene_id,
+                                        "gene_symbol": d.gene_symbol,
+                                        "start_pos": d.gene_start_pos,
+                                        "strand": d.gene_strand,
+                                        "species": "r"
+                                    });
+
+                                    getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'comp');
+                                }
+                                // if it's a comparison gene, mark it as such
+                            } else {
+                                let syntenic = regions.filter(function(r) {
+                                    return r.chr === d.gene_chr && d.gene_start_pos >= r.start && d.gene_end_pos <= r.end;
+                                });
+
+                                if(syntenic.length > 0) {
+                                    matchedOntFeatures.push({
+                                        "chr": d.gene_chr,
+                                        "end_pos": d.gene_end_pos,
+                                        "gene_id": d.gene_id,
+                                        "gene_symbol": d.gene_symbol,
+                                        "start_pos": d.gene_start_pos,
+                                        "strand": d.gene_strand,
+                                        "block_id": syntenic[0].block,
+                                        "species": "c"
+                                    });
+
+                                    getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'ref');
+                                }
+                            }
+
+                        });
+
+                        let uniqueMatched = [];
+
+                        // there may be repeats so get rid of repeats
+                        matchedOntFeatures.forEach(function(f) {
+                            let uniqueMatchedIDs = uniqueMatched.map(function(um) { return um.gene_id; });
+                            if(uniqueMatchedIDs.indexOf(f.gene_id) < 0) {
+                                uniqueMatched.push(f);
+                            }
+                        });
+
+                        that.setontMatches(uniqueMatched);
                         that.setmatchedFeatures();
                     });
             }
@@ -901,7 +1006,6 @@
                     });
                 }
             }
-
 
             return res;
         }

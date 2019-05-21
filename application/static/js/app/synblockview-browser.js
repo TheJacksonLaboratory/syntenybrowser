@@ -1745,7 +1745,11 @@ let BlockView;
                 .enter()
                 .append("rect")
                 .attr("height", that._trackHeight)
-                .attr("class", "reference");
+                .attr("class", "reference")
+                .on("click", function(d) {
+                    that._geneClickTip.hide();
+                    that._clickedGene = null;
+                });
 
             if(that._highlightedQTLs.length > 0) {
                 that.drawReferenceQTLs();
@@ -1783,6 +1787,10 @@ let BlockView;
                 .attr("class", "qtl")
                 .attr("id", function(d) {
                     return d.qtl_id
+                })
+                .on("click", function(d) {
+                    that._geneClickTip.hide();
+                    that._clickedGene = null;
                 });
         };
 
@@ -1949,14 +1957,14 @@ let BlockView;
                 .enter()
                 .append("rect")
                 .attr("height", that._trackHeight)
-                .attr("class", function(d) {
-                    return "block c" + d.chr;
-                })
+                .attr("class", function(d) { return "block c" + d.chr; })
                 .attr("fill", function(d) {
                     return SynUtils.fadeColor(that._colors[d.chr], 0.3);
                 })
-                .attr("stroke", function(d) {
-                    return that._colors[d.chr];
+                .attr("stroke", function(d) { return that._colors[d.chr]; })
+                .on("click", function(d) {
+                    that._geneClickTip.hide();
+                    that._clickedGene = null;
                 });
         };
 
