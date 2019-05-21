@@ -257,7 +257,10 @@ def import_gene_ontology(fname, taxonid, db_con):
                 continue
             components = line.split("\t")
             gene_taxonid = taxonid
-            gene_id = components[1]
+            if gene_taxonid == 10090:
+                gene_id = components[1]
+            else:
+                gene_id = components[2]
             gene_ontology_id = components[4]
             c.execute(
                 '''INSERT INTO gene_ontology_map VALUES(?, ? ,?) ''',
