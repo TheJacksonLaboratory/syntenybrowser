@@ -298,8 +298,8 @@ hr.settings-hr {
     background-color: #FFFFFF;
 }
 
-#search-msg {
-    color: #CC0000;
+#search-msg, #ontology-search-msg {
+    color: #CC0000 !important;
     margin-right: 15px;
     height: 15px;
     font-size: 12px;

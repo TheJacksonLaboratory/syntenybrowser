@@ -62,6 +62,9 @@ let JaxSynteny;
      * and structures depending on user operation and interaction
      */
     JaxSynteny.setup = function() {
+        $("#view-blocks-bottom button").remove();
+        $("#view-blocks-top button").remove();
+
         // config file name: reference species
         let refFileName = $("#ref-genome-select")
             .children("option")

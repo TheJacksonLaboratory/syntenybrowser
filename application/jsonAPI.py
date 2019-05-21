@@ -1,7 +1,7 @@
 import json
 from flask import jsonify
-from application import sqliteaccess as dba
-from application import app
+from synbrowser import sqliteaccess as dba
+from synbrowser import app
 
 
 @app.route('/gene-assoc-type-info/<taxon_id>/<gene_list>.json')
@@ -47,17 +47,32 @@ def qtl_info(taxon_id, qtl_symbol):
 
 
 @app.route('/ont-info/<taxon_id>/<ont_abbrev>/<ont_term>.json')
-def ont_info(taxon_id, ont_abbrev, ont_term):
+def species_ont_info(taxon_id, ont_abbrev, ont_term):
     '''
     Finds ontology entries that match the searched term and returns
     information about them and their associated genes in the specified species.
 
     :param taxon_id: NCBI species taxonomy id
     :param ont_abbrev: ontology short name / abbreviation (i.e. DO, GO, MP, ...)
-    :param ont_terms: ontology related term
+    :param ont_term: ontology related term
     :return: dictionary objects list containing ontology and gene information
     '''
-    ont_information = dba.get_genes_labeled_with_term(taxon_id, ont_abbrev, ont_term)
+    ont_information = dba.get_species_genes_labeled_with_term(taxon_id, ont_abbrev, ont_term)
+    return json.dumps(list(ont_information))
+
+
+@app.route('/ont-info/<ont_abbrev>/<ont_term>.json')
+def ont_info(ont_abbrev, ont_term):
+    '''
+    Finds ontology entries that match the searched term and returns
+    information about them and their associated genes in the specified species.
+
+    :param taxon_id: NCBI species taxonomy id
+    :param ont_abbrev: ontology short name / abbreviation (i.e. DO, GO, MP, ...)
+    :param ont_term: ontology related term
+    :return: dictionary objects list containing ontology and gene information
+    '''
+    ont_information = dba.get_genes_labeled_with_term(ont_abbrev, ont_term)
     return json.dumps(list(ont_information))
 
 
