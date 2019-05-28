@@ -4,7 +4,7 @@ allows researchers to highlight or selectively display genome features in the re
 based on the biological attributes of the features. The current implementation for the browser supports the reference 
 genomes of the laboratory mouse and human.
 
-There is a live, working version of Synteny Browser available at: [syntenybrowser.jax.org](http://syntenybrowser.jax.org/) 
+There is a live, working version of Synteny Browser available at: [syntenybrowser.jax.org](http://syntenybrowser.jax.org/)
 
 User documentation can be found [here](http://syntenybrowser.jax.org/static/docs/SB-UserManual_v1.pdf).
 
@@ -89,6 +89,23 @@ Run the application:
 When finished, shut down the virtual environment:
 
     deactivate
+
+
+# Running the Synteny Browser from the Docker Image
+### Prerequisites
+1. A bash terminal (Mac OS X & Linux will have this included) or a way of running shell scripts
+2. Docker installed on your machine 
+
+### Pull the image
+Start docker on your machine and once running, pull the image using
+
+    docker pull lamoua/synbrowser
+
+Once the image is done pulling from DockerHub, run the container
+
+    docker run -p 5001:5001 synbrowser:latest
+
+This should set off the container as well as start the Python Flask server. Navigating to the specified location (which should be localhost:5001 by default), should bring you to the JAX Synteny Browser interface running from the container. 
 
 
 ## Citation

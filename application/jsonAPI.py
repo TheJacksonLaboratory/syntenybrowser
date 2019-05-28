@@ -1,7 +1,7 @@
 import json
 from flask import jsonify
-from synbrowser import sqliteaccess as dba
-from synbrowser import app
+from application import sqliteaccess as dba
+from application import app
 
 
 @app.route('/gene-assoc-type-info/<taxon_id>/<gene_list>.json')

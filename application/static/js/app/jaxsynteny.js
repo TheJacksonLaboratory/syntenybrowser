@@ -210,11 +210,11 @@ $(function() {
     });
 
     $("#gene-type-filter-select").on("change", function() {
-          JaxSynteny.blockViewFilterMng.updateGeneTypeSelect();
+        JaxSynteny.blockViewFilterMng.updateGeneTypeSelect();
     });
 
     $("#ont-filter-select").on("change", function() {
-          JaxSynteny.blockViewFilterMng.changeOntology();
+        JaxSynteny.blockViewFilterMng.changeOntology();
     });
 
     $("#ont-term-filter-input").on("change keyup copy paste cut", function() {
