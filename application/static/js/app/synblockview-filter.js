@@ -170,7 +170,10 @@
                 this.setOntSelect();
 
                 ontologySearchSpecies = speciesKey;
-                geneOntTermInput.val("");
+
+                if(this.getontSearchTerms()[ontSelect.val()]) {
+                   this.changeOntology();
+                }
             };
 
 			/**
@@ -523,13 +526,8 @@
 			that.cleanup();
 
             let symbolIds = [];
-            let types = [];
-            types.push("-- no selection --"); // add select option for clearing the selection
-            let goTerms = []; 
-            let mpTerms = [];
-            let allIds = [];
+            let types = ["-- no selection --"];
 
-            that._featureSymbolsIdsMap = {};
             that._featureTypesMap = {};
 
             // reference features
@@ -539,7 +537,6 @@
                 let dRef = d.referenceFeatures;
 
                 for(let i = 0; i < dRef.length; i++) {
-                    allIds.push(dRef[i].gene_id);
                     symbolIds.push(dRef[i].gene_id + " - " + dRef[i].gene_symbol);
                     types.push(dRef[i].type);
 
@@ -573,7 +570,6 @@
                 let dComp = d.comparisonFeatures;
 
                 for(let i = 0; i < dComp.length; i++) {
-                    allIds.push(dComp[i].gene_id);
                     symbolIds.push(dComp[i].gene_id + " - " + dComp[i].gene_symbol);
                     types.push(dComp[i].type);
 
@@ -604,36 +600,38 @@
                 }
             }
 
+
             // load gene ontologies typeahead terms
             // gik [01/07/18] TODO: ontologies don't have to be read from the database each time the chromosome changes
             // since the ontology does not change when chromosome change
             let onts = JaxSynteny.speciesRef.ontologies.concat(...JaxSynteny.speciesComp.ontologies);
+            let uniqueOnts = Array.from(new Set(onts.map(function(o) { return o.abbrev; })));
             let count = 0;
-            for(let i = 0; i < onts.length; i++) {
+            for(let i = 0; i < uniqueOnts.length; i++) {
                 let terms = [];
-                let srcUrl = "./fetch-autocomplete-terms/ont/" + onts[i].abbrev + ".json";
+                let srcUrl = "./fetch-autocomplete-terms/ont/" + uniqueOnts[i] + ".json";
 
                 $.getJSON(srcUrl, function(data) {
                     data.forEach(function(d) {
                         terms.push(d.term);
                     });
-                    that.setontSearchTerms(terms, onts[i].abbrev);
+                    that.setontSearchTerms(terms, uniqueOnts[i]);
                     count++;
                 }).fail(function() {
                     JaxSynteny.logger.changeFilterStatus("LOADING ONTOLOGIES FAIL", SynUtils.errorStatusColor);
                 }).always(function() {
                     // that.setontSearchTerms(terms, onts[i].abbrev);
-                    if(count >= onts.length) {
-                        setOntInputAutoComplete(that.getontSearchTerms()[onts[0].abbrev]);
+                    if(count >= uniqueOnts.length) {
+                        that.setfeatureSymbolsIds(symbolIds);
+                        that.setfeatureTypes(types);
+
+                        setOntInputAutoComplete(that.getontSearchTerms()[that._currOnt]);
                     }
                 });
             }
 
-            that.setfeatureSymbolsIds(symbolIds);
-            that.setfeatureTypes(types);
-
             // data has been loaded, enable control elements
-            this.enableControlElements();
+            that.enableControlElements();
         };
 
 
@@ -785,8 +783,6 @@
                                     "block_id": syntenic[0].block,
                                     "species": "c"
                                 });
-
-                                getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'ref');
                             }
                         });
                         let uniqueMatched = [];
@@ -821,8 +817,6 @@
                                     "strand": d.gene_strand,
                                     "species": "r"
                                 });
-
-                                getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'comp');
                             }
                         });
                         let uniqueMatched = [];
@@ -859,8 +853,6 @@
                                         "strand": d.gene_strand,
                                         "species": "r"
                                     });
-
-                                    getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'comp');
                                 }
                                 // if it's a comparison gene, mark it as such
                             } else {
@@ -879,8 +871,6 @@
                                         "block_id": syntenic[0].block,
                                         "species": "c"
                                     });
-
-                                    getFeatureHomologInfo(that, d.gene_id, matchedOntFeatures, 'ref');
                                 }
                             }
 
