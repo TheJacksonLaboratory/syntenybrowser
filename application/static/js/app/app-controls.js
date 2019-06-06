@@ -46,13 +46,20 @@
                 let msg = $("#ref-genome-interval-msg");
                 msg.html("");
 
+                let newInterval = SynUtils.parseReferenceInterval(JaxSynteny.dataManager.getReferenceInterval());
+                let currInterval = blockview._referenceInterval;
+
                 // if there is a interval present update the reference
-                if($("#ref-genome-interval").val() !== "") {
-                    JaxSynteny.dataManager.loadBlockViewBrowser();
-                }
-                else {
+                if($("#ref-genome-interval").val() === "") {
                     msg.html("Please enter a valid interval");
                     setTimeout(function() { msg.html(""); }, 10000);
+
+                } else if(currInterval && currInterval.chr === newInterval.chr &&
+                          currInterval.startPos === newInterval.startPos && currInterval.endPos === newInterval.endPos) {
+                    msg.html("This interval is already viewable in the block view");
+                    setTimeout(function() { msg.html(""); }, 10000);
+                } else {
+                    JaxSynteny.dataManager.loadBlockViewBrowser();
                 }
             });
 

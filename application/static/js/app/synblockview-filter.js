@@ -49,7 +49,6 @@
 
             this._chrNum = null;
             this._currOnt = ontSelect.val();
-            this._featureSymbolsIdsMap = {};
             this._featureTypesMap = {};
 
             let matchedFeatures = []; // set of gene IDs matching the current filter requirements
@@ -144,7 +143,20 @@
                         .attr("value", ontologies[i].abbrev)
                         .text(ontologies[i].name)); 
                 }
-                this._currOnt = ontSelect.val();
+
+                let availableOnts = ontologies.map(function(ont) {
+                    return ont.abbrev;
+                });
+
+                // only change the ontology select if the previously selected ontology is no longer an option
+                if(availableOnts.indexOf(this._currOnt) < 0) {
+                    this._currOnt = ontSelect.val();
+                    return true;
+                } else {
+                    ontSelect.val(this._currOnt);
+                    return false;
+                }
+
             };
 
             // in the case that there's an error, make sure that the run filter button is (re)enabled
@@ -167,11 +179,11 @@
 
             this.updateOntologies = function(onts, speciesKey) {
                 this.setOntologies(onts);
-                this.setOntSelect();
+                let ontChanged = this.setOntSelect();
 
                 ontologySearchSpecies = speciesKey;
 
-                if(this.getontSearchTerms()[ontSelect.val()]) {
+                if(this.getontSearchTerms()[ontSelect.val()] && ontChanged) {
                    this.changeOntology();
                 }
             };
@@ -833,29 +845,34 @@
                         that.setmatchedFeatures();
                     });
             } else {
-                let searchURL = "./ont-info/" + ont + "/" + searchTerm + ".json";
+                let refSearchURL = "./ont-info/" + JaxSynteny.speciesRef.getSpeciesId() + "/" + ont + "/" + searchTerm + ".json";
+                let compSearchURL = "./ont-info/" + JaxSynteny.speciesComp.getSpeciesId() + "/" + ont + "/" + searchTerm + ".json";
 
-                $.getJSON(searchURL)
+                $.getJSON(refSearchURL)
                     .fail(function() {
                         JaxSynteny.logger.changeFilterStatus("problem getting ontologies", SynUtils.errorStatusColor);
                     })
                     .done(function(data) {
                         data.forEach(function(d) {
-                            // if it's a reference gene, mark it as such
-                            if(d.gene_taxonid === JaxSynteny.speciesRef.getSpeciesId()) {
-                                if(d.gene_chr === chromosome) {
-                                    matchedOntFeatures.push({
-                                        "chr": d.gene_chr,
-                                        "end_pos": d.gene_end_pos,
-                                        "gene_id": d.gene_id,
-                                        "gene_symbol": d.gene_symbol,
-                                        "start_pos": d.gene_start_pos,
-                                        "strand": d.gene_strand,
-                                        "species": "r"
-                                    });
-                                }
-                                // if it's a comparison gene, mark it as such
-                            } else {
+                            if(d.gene_chr === chromosome) {
+                                matchedOntFeatures.push({
+                                    "chr": d.gene_chr,
+                                    "end_pos": d.gene_end_pos,
+                                    "gene_id": d.gene_id,
+                                    "gene_symbol": d.gene_symbol,
+                                    "start_pos": d.gene_start_pos,
+                                    "strand": d.gene_strand,
+                                    "species": "r"
+                                });
+                            }
+                        });
+
+                        $.getJSON(compSearchURL)
+                        .fail(function() {
+                            JaxSynteny.logger.changeFilterStatus("problem getting ontologies", SynUtils.errorStatusColor);
+                        })
+                        .done(function(data) {
+                            data.forEach(function(d) {
                                 let syntenic = regions.filter(function(r) {
                                     return r.chr === d.gene_chr && d.gene_start_pos >= r.start && d.gene_end_pos <= r.end;
                                 });
@@ -872,22 +889,20 @@
                                         "species": "c"
                                     });
                                 }
-                            }
+                            });
+                            let uniqueMatched = [];
 
+                            // there may be repeats so get rid of repeats
+                            matchedOntFeatures.forEach(function(f) {
+                                let uniqueMatchedIDs = uniqueMatched.map(function(um) { return um.gene_id; });
+                                if(uniqueMatchedIDs.indexOf(f.gene_id) < 0) {
+                                    uniqueMatched.push(f);
+                                }
+                            });
+
+                            that.setontMatches(uniqueMatched);
+                            that.setmatchedFeatures();
                         });
-
-                        let uniqueMatched = [];
-
-                        // there may be repeats so get rid of repeats
-                        matchedOntFeatures.forEach(function(f) {
-                            let uniqueMatchedIDs = uniqueMatched.map(function(um) { return um.gene_id; });
-                            if(uniqueMatchedIDs.indexOf(f.gene_id) < 0) {
-                                uniqueMatched.push(f);
-                            }
-                        });
-
-                        that.setontMatches(uniqueMatched);
-                        that.setmatchedFeatures();
                     });
             }
         }

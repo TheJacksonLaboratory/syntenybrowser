@@ -232,6 +232,7 @@ let GenomeView;
         };
 
         CircosPlot.prototype.clearGenomeView = function() {
+            let that = this;
             // clear interval
             $("#ref-genome-interval").val("");
 
