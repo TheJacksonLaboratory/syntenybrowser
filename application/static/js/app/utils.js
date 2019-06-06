@@ -170,7 +170,8 @@ let SynUtils;
         if(!intervalString) {
             return false;
         }
-        let match = intervalString.match(/^\s*(Chr)?([a-z0-9]+)\s*:\s*([0-9]+)\s*-\s*([0-9]+)\s*$/i);
+        let match = intervalString.replace(/,/g, '')
+                                  .match(/^\s*(Chr)?([a-z0-9]+)\s*:\s*([0-9]+)\s*-\s*([0-9]+)\s*$/i);
         if(match) {
             let interval = {
                 chr: match[2].toUpperCase(),

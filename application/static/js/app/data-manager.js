@@ -35,10 +35,6 @@ let DataManager;
 
             // html element(s) event handlers
             BlockViewManager.prototype.loadBlockViewBrowser = function() {
-                // remove existing block view svg content, if any exists
-                d3.select("#block-view-svg").selectAll("*").remove();
-                d3.select("#chr-color-legend").selectAll("*").remove();
-
                 // show the spinner animation
                 $("#spinner").show();
 
@@ -71,6 +67,9 @@ let DataManager;
                         let refSpeciesChanged = that._refSpecies !== JaxSynteny.speciesRef.getSpeciesId();
 
                         if(chromosomeChanged || refSpeciesChanged || highlightedGenesChanged || highlightedQTLsChanged) {
+                            // remove existing block view svg content, if any exists
+                            d3.select("#block-view-svg").selectAll("*").remove();
+                            d3.select("#chr-color-legend").selectAll("*").remove();
 
                             that._refSpecies = JaxSynteny.speciesRef.getSpeciesId();
                             that._chromosome = interval.chr;

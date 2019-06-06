@@ -2565,34 +2565,36 @@ let BlockView;
             let listForEndPoint = that.syntenicBlockEndpoints.asc;
             let listForStartPoint = that.syntenicBlockEndpoints.desc;
 
-            listForEndPoint.forEach(function(point, i, points) {
-                if(!endPos && that._referenceInterval.endPos <= point.loc) {
-                    if(point.lessThan) {
+            for(let i = 0; i < listForEndPoint.length; i++) {
+                if(!endPos && that._referenceInterval.endPos <= listForEndPoint[i].loc) {
+                    if(listForEndPoint[i].lessThan) {
                         endPos = that._referenceInterval.endPos;
-                        endBlock = point.lessThan;
+                        endBlock = listForEndPoint[i].lessThan;
                     } else {
-                        endPos = points[i - 1].loc;
-                        endBlock = points[i - 1].lessThan;
+                        endPos = listForEndPoint[i - 1] ? listForEndPoint[i - 1].loc : null;
+                        endBlock = listForEndPoint[i - 1] ? listForEndPoint[i - 1].lessThan : null;
                     }
+                    break;
                 }
-            });
+            }
 
             if(!endPos) {
                 endPos = listForStartPoint[0].loc;
                 endBlock = listForStartPoint[0].lessThan;
             }
 
-            listForStartPoint.forEach(function(point, i, points) {
-                if(!startPos && that._referenceInterval.startPos >= point.loc) {
-                    if(point.greaterThan) {
+            for(let i = 0; i < listForStartPoint.length; i++) {
+                if(!startPos && that._referenceInterval.startPos >= listForStartPoint[i].loc) {
+                    if(listForStartPoint[i].greaterThan) {
                         startPos =  that._referenceInterval.startPos;
-                        startBlock = point.greaterThan;
+                        startBlock = listForStartPoint[i].greaterThan;
                     } else {
-                        startPos = points[i - 1].loc;
-                        startBlock = points[i - 1].greaterThan;
+                        startPos = listForStartPoint[i - 1].loc;
+                        startBlock = listForStartPoint[i - 1].greaterThan;
                     }
+                    break;
                 }
-            });
+            }
 
             if(!startPos) {
                 startPos = listForEndPoint[0].loc;
@@ -2601,7 +2603,7 @@ let BlockView;
 
             // only calculate and display comparison points if the two reference points aren't in between two syntenic
             // blocks
-            if(startPos < endPos) {
+            if(startPos < endPos && startPos !== listForEndPoint[0].loc && endPos !== listForStartPoint[0].loc) {
                 let compCoords = [];
                 let data = [{
                     pos: startPos,
