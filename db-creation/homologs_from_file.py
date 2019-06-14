@@ -116,7 +116,7 @@ def load_homologs(db_con, homolog_filepath):
     reader = csv.DictReader(hom_file, fieldnames=HOM_FILE_HEADER_COLUMNS,
                             delimiter='\t')
     # Now load all the rows.
-    query = """INSERT INTO homolog (
+    query = """INSERT OR REPLACE INTO homolog (
                  ref_gene_id, ref_gene_sym, ref_taxon_id, ref_seq_id,
                  ref_start, ref_end, ref_strand,
                  comp_gene_id, comp_gene_sym, comp_taxon_id,

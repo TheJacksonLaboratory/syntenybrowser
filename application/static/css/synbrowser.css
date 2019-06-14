@@ -664,7 +664,9 @@ span.twitter-typeahead { /* overrides span.twitter-typeahead */
 }
 
 .tt-menu {
-    width: 250px;
+    max-width: 400px;
+    max-height: 200px;
+    overflow-y: auto;
     margin: 12px 0;
     padding: 6px 0;
     background-color: #fff;
