@@ -222,7 +222,7 @@ def import_genes(service, db_con):
     query.add_constraint('organism.taxonId', 'ONE OF',
                          ['10090', '9606'], code='A')
     for row in query.rows():
-        if row["symbol"] is not None and row["mgiType"] is not None:
+        if row["symbol"] is not None and row["mgiType"] is not None and row["mgiType"] != "heritable phenotypic marker":
             c.execute(
                 '''INSERT INTO gene (gene_id, gene_taxonid, gene_symbol,
                                      gene_chr, gene_start_pos, gene_end_pos,
@@ -238,9 +238,7 @@ def import_genes(service, db_con):
                     row['chromosomeLocation.strand'],
                     row['mgiType'],
                 )
-        )
-
-
+            )
 
 
 def get_headers(which):
@@ -635,7 +633,7 @@ def main():
     import_gff_annotations(args.mouse_features, 10090, db_con)
     db_con.commit()
 
-    print("\tGetting human features transcripts and exons")
+    print("\tGetting human feature transcripts and exons")
     import_gff_annotations(args.human_features, 9606, db_con)
     db_con.commit()
 

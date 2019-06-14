@@ -65,7 +65,8 @@ let FeatureSearch;
                 }, {
                     name: "terms",
                     display: "term",
-                    source: suggestions
+                    source: suggestions,
+                    limit: 20
                 });
         };
 

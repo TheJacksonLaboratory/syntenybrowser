@@ -114,6 +114,8 @@ let DataManager;
                 let that = this;
                 if(that._syntenicBlocksData.length > 0) {
                     let syntenicBlocks = that._syntenicBlocksData.map(function(currBlock) {
+                        let lastIndex = currBlock.match_anchor_points.ref_anchor_points.length - 1;
+
                         return {
                             symbol: currBlock.symbol,
                             orientationMatch: currBlock.same_orientation,
@@ -121,7 +123,7 @@ let DataManager;
                                 refAnchorPoints: {
                                     chr: currBlock.ref_chr,
                                     startPos: currBlock.match_anchor_points.ref_anchor_points[0],
-                                    endPos: currBlock.match_anchor_points.ref_anchor_points[1],
+                                    endPos: currBlock.match_anchor_points.ref_anchor_points[lastIndex],
                                     size: 1 + currBlock.ref_end_pos - currBlock.ref_start_pos,
                                     anchorPoints: currBlock.match_anchor_points.ref_anchor_points,
                                     orientationMatch: currBlock.same_orientation
@@ -129,7 +131,7 @@ let DataManager;
                                 compAnchorPoints: {
                                     chr: currBlock.comp_chr,
                                     startPos: currBlock.match_anchor_points.comp_anchor_points[0],
-                                    endPos: currBlock.match_anchor_points.comp_anchor_points[1],
+                                    endPos: currBlock.match_anchor_points.comp_anchor_points[lastIndex],
                                     size: 1 + currBlock.comp_end_pos - currBlock.comp_start_pos,
                                     anchorPoints: currBlock.match_anchor_points.comp_anchor_points,
                                     orientationMatch: currBlock.same_orientation
@@ -139,7 +141,7 @@ let DataManager;
                                 refAnchorPoints: {
                                     chr: currBlock.ref_chr,
                                     startPos: currBlock.true_anchor_points.ref_anchor_points[0],
-                                    endPos: currBlock.true_anchor_points.ref_anchor_points[1],
+                                    endPos: currBlock.true_anchor_points.ref_anchor_points[lastIndex],
                                     size: 1 + currBlock.ref_end_pos - currBlock.ref_start_pos,
                                     anchorPoints: currBlock.true_anchor_points.ref_anchor_points,
                                     orientationMatch: currBlock.same_orientation
@@ -147,7 +149,7 @@ let DataManager;
                                 compAnchorPoints: {
                                     chr: currBlock.comp_chr,
                                     startPos: currBlock.true_anchor_points.comp_anchor_points[0],
-                                    endPos: currBlock.true_anchor_points.comp_anchor_points[1],
+                                    endPos: currBlock.true_anchor_points.comp_anchor_points[lastIndex],
                                     size: 1 + currBlock.comp_end_pos - currBlock.comp_start_pos,
                                     anchorPoints: currBlock.true_anchor_points.comp_anchor_points,
                                     orientationMatch: currBlock.same_orientation
