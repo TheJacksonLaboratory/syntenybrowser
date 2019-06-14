@@ -477,7 +477,7 @@ let BlockView;
 
             that._anchorPathCommands = [];
             that._tracks.select("#anchors").remove();
-            that.generateReferenceBlockData();
+            //that.generateReferenceBlockData();
             that.generateFeatureIndicatorPanel();
             that._comparisonGeneData.selectAll(".exon").remove();
             let visibleComp = that.updateComparisonTrack();
@@ -487,7 +487,7 @@ let BlockView;
                 that.renderExons(null, visibleComp);
             }
 
-            that.drawOrientationIndicators();
+            that.drawOrientationIndicators(that.blockData.forIndicators);
             that.updateOrientationIndicators();
             that.drawAnchors();
             that.updateAnchors();
@@ -795,12 +795,14 @@ let BlockView;
                     if (e.chr === that._referenceInterval.chr) {
                         e.loc = centerCoord(e);
                         chrFeatures.gene.push(e);
-                        that._genesToHomologs[e.gene_id].forEach(function(f) {
-                            // to avoid duplicates
-                            if(!isInHighlightedFeaturesList(that._highlightedGenes, f)) {
-                                that._highlightedGenes.push(f);
-                            }
-                        });
+                        if(that._genesToHomologs[e.gene_id]) {
+                            that._genesToHomologs[e.gene_id].forEach(function(f) {
+                                // to avoid duplicates
+                                if(!isInHighlightedFeaturesList(that._highlightedGenes, f)) {
+                                    that._highlightedGenes.push(f);
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -955,7 +957,8 @@ let BlockView;
                 .attr("y2", 10);
 
             let comparisonFeatures = [];
-                featureGenes.forEach(function(e) {
+            featureGenes.forEach(function(e) {
+                if(that._referenceToComparison[e.gene_id]) {
                     let homologs = that._referenceToComparison[e.gene_id].homologs;
                     if (homologs.length > 0) {
                         homologs.forEach(function(f) {
@@ -965,7 +968,8 @@ let BlockView;
                             comparisonFeatures.push(f);
                         });
                     }
-                });
+                }
+            });
 
             that._comparisonFeatureGeneHovers = that._comparisonFeatureGeneIndicators
                 .append("g")
@@ -1306,20 +1310,18 @@ let BlockView;
 
                 blocks.push(blockInfo);
 
-                if(that._anchorPoints !== "trueAnchorPoints") {
-                    if (!currBlock.orientationMatch) {
-                        let firstLine = {
-                            start_pos: firstRefAnchor,
-                            end_pos: lastRefAnchor
-                        };
+                if (!currBlock.orientationMatch) {
+                    let firstLine = {
+                        start_pos: firstRefAnchor,
+                        end_pos: lastRefAnchor
+                    };
 
-                        let secondLine = {
-                            start_pos: lastRefAnchor,
-                            end_pos: firstRefAnchor
-                        };
+                    let secondLine = {
+                        start_pos: lastRefAnchor,
+                        end_pos: firstRefAnchor
+                    };
 
-                        locsForIndicators.push(firstLine, secondLine);
-                    }
+                    locsForIndicators.push(firstLine, secondLine);
                 }
 
                 // add the scaling factor to the lookup info
@@ -1545,11 +1547,11 @@ let BlockView;
         BlockViewBrowser.prototype.drawTracks = function(params) {
             let that = this;
 
-            let data = that.generateReferenceBlockData();
+            that.blockData = that.generateReferenceBlockData();
 
             that.drawTrackGroups();
 
-            that.drawOrientationIndicators(data.forIndicators);
+            that.drawOrientationIndicators(that.blockData.forIndicators);
 
             that.drawAnchors();
 
@@ -1562,8 +1564,8 @@ let BlockView;
 
             that.generateTooltips();
 
-            that.drawReferenceTrack(data.forBlocks, params.referenceData);
-            that.drawComparisonTrack(data.forBlocks, params.comparisonData);
+            that.drawReferenceTrack(that.blockData.forBlocks, params.referenceData);
+            that.drawComparisonTrack(that.blockData.forBlocks, params.comparisonData);
 
             that.bindTrackBehaviors();
         };
@@ -1822,7 +1824,7 @@ let BlockView;
                         .attr("y2", that._trackHeight + (that._height * 0.05))
                         .style("stroke", SynUtils.fadeColor("#f00", 0.5));
                 } else { // otherwise we should be showing the indicators
-                    that._orientationIndicators.selectAll("*").attr("display", "initial");
+                    that._orientationIndicators.selectAll("*").attr("display", "block");
                 }
             }
         };
@@ -1872,7 +1874,7 @@ let BlockView;
                             homologs += (" homolog-" + e);
                         }
                     });
-                    return homologs + " " + d.auto_block_id;
+                    return homologs + " gene-block";
                 })
                 .on("mouseover", function(d) {
                     d3.select(this).selectAll("*")
@@ -1992,16 +1994,16 @@ let BlockView;
                 let lastRefAnchorPos = that._scaleBasesToPixels(referenceAnchorPoints[lastIndex]);
 
                 // We need to use the true anchor points to make the scale for matching orientation
-                let firstCompAnchor = currBlock.trueAnchorPoints.compAnchorPoints.anchorPoints[0];
-                let lastCompAnchor = currBlock.trueAnchorPoints.compAnchorPoints.anchorPoints[lastIndex];
+                let firstCompAnchor = currBlock.trueAnchorPoints.compAnchorPoints.startPos;
+                let lastCompAnchor = currBlock.trueAnchorPoints.compAnchorPoints.endPos;
 
                 that._scaleCompToRefBases.trueAnchorPoints[currBlock.symbol] = d3.scale.linear()
                     .domain([firstCompAnchor, lastCompAnchor])
                     .range([firstRefAnchorPos, lastRefAnchorPos]);
 
                 // We need to use the match anchor points to make the scale for true orientation
-                firstCompAnchor = currBlock.matchAnchorPoints.compAnchorPoints.anchorPoints[0];
-                lastCompAnchor = currBlock.matchAnchorPoints.compAnchorPoints.anchorPoints[lastIndex];
+                firstCompAnchor = currBlock.matchAnchorPoints.compAnchorPoints.startPos;
+                lastCompAnchor = currBlock.matchAnchorPoints.compAnchorPoints.endPos;
 
                 that._scaleCompToRefBases.matchAnchorPoints[currBlock.symbol] = d3.scale.linear()
                     .domain([firstCompAnchor, lastCompAnchor])
@@ -2314,7 +2316,7 @@ let BlockView;
             }
 
             // gene data is visible only if the gene is positioned within the viewport
-            let visible = that._comparisonGeneData.selectAll(that.blockSelector)
+            let visible = that._comparisonGeneData.selectAll("g.gene-block")
                 .filter(function(d) {
                     let geneStart = that.calculateNewScaledX(d);
                     let geneEnd = geneStart + that.calculateNewScaledWidth(d);
@@ -2331,7 +2333,7 @@ let BlockView;
                 .attr("transform", function(d) {
                     return "translate(" + that.calculateNewScaledX(d) + ", " + d.ypos + ")";
                 })
-                .attr("display", "initial");
+                .attr("display", "block");
 
             visible.selectAll("text")
                 .attr("visibility", "hidden");
@@ -2730,6 +2732,10 @@ let BlockView;
                 coordPos = that._intervalChanges.newScaleFactor *
                         that._scaleCompToRefBases.trueAnchorPoints[coordData.block_id](coordData.start_pos) +
                         that._intervalChanges.newX;
+
+                if(coordData.gene_symbol === 'Nkain2') {
+                    console.log(coordPos);
+                }
             }
 
             return coordPos;

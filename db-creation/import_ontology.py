@@ -257,7 +257,7 @@ def import_gene_ontology(fname, taxonid, db_con):
                 continue
             components = line.split("\t")
             gene_taxonid = taxonid
-            if gene_taxonid == 10090:
+            if taxonid == 10090:
                 gene_id = components[1]
             else:
                 gene_id = components[2]
@@ -274,18 +274,6 @@ def import_gene_ontology(fname, taxonid, db_con):
 
 def import_mouse_mp_ontology_genes(fname, taxonid, db_con):
     """
-    Format of this file:
-
-      marker_id  |                  symbol                  |   mp_id    |                                        mp_term
--------------+------------------------------------------+------------+----------------------------------------------------------------------------------------
- MGI:1915609 | 0610010K14Rik                            | MP:0011100 | preweaning lethality, complete penetrance
- MGI:1913367 | 1110001J03Rik                            | MP:0000562 | polydactyly
- MGI:1913367 | 1110001J03Rik                            | MP:0001297 | microphthalmia
- MGI:1913367 | 1110001J03Rik                            | MP:0001697 | abnormal embryo size
- MGI:1913367 | 1110001J03Rik                            | MP:0002152 | abnormal brain morphology
- MGI:1913367 | 1110001J03Rik                            | MP:0011110 | preweaning lethality, incomplete penetrance
- MGI:1913435 | 1110037F02Rik                            | MP:0003345 | decreased rib number
-
     :param fname: file to process
     :param taxonid: taxon.  If this remains mouse-specific, this will always be
                     10090
@@ -296,7 +284,7 @@ def import_mouse_mp_ontology_genes(fname, taxonid, db_con):
     c = db_con.cursor()
     with flex_open(fname) as f:
         for line in f:
-            parts = [x.strip() for x in line.split('|')]
+            parts = [x.strip() for x in line.split('\t')]
             if len(parts) < 4:
                 continue
             if parts[0][:4] != 'MGI:':
@@ -309,7 +297,6 @@ def import_mouse_mp_ontology_genes(fname, taxonid, db_con):
 
 def associate_disease_ontology(fname, db_con):
     """
-
     :param fname: file to process
     :param db_con: connection to the database.
     :return: None.

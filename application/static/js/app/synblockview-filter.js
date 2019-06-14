@@ -1075,7 +1075,8 @@
                 }, 
                 {
                     name: 'symbol_id_suggestions',
-                    source: symbol_id_suggestions
+                    source: symbol_id_suggestions,
+                    limit: 20
                 });
             }
         }
@@ -1105,7 +1106,8 @@
                 }, 
                 {
                     name: 'ont_terms_suggestions',
-                    source: ont_terms_suggestions
+                    source: ont_terms_suggestions,
+                    limit: 20
                 });
             }
         }
