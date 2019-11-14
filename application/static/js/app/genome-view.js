@@ -45,7 +45,6 @@ let GenomeView;
             // get current margin top so we can reset it after download
             let genomeViewMarginTop = d3.select("#genome-view-svg").style("margin-top");
             let genomeViewHeight = d3.select("#genome-view-svg").attr("viewBox").split(" ")[3];
-            console.log(genomeViewHeight);
 
             // svg download functionality can't work with display none and any margin top, so reset these
             d3.select("#genome-view-legend").style("display", "block");
@@ -105,64 +104,7 @@ let GenomeView;
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", ("0 0 " + this.width + " " + this.height));
 
-            this.resizePanels();
-
-            window.onresize = this.resizePanels;
-
         }
-
-        /**
-         * Resizes the height of the panel based on the width of the browser window
-         */
-        CircosPlot.prototype.resizePanels = function() {
-            // Any width values here are manual breakpoints
-            if($(window).width() > 1425) {
-                let newHeight = $("#genome-view-svg").height() + 18;
-                $(".custom-panel-body").height(newHeight);
-
-                if($(window).width() > 1875) {
-                    $('div.dataTables_scrollBody').height($(window).width() * 0.28);
-                }
-                else if($(window).width() > 1665){
-                    $('div.dataTables_scrollBody').height($(window).width() * 0.26);
-                }
-                else if($(window).width() > 1575){
-                    $('div.dataTables_scrollBody').height($(window).width() * 0.25);
-                }
-                else if($(window).width() > 1490){
-                    $('div.dataTables_scrollBody').height($(window).width() * 0.24);
-                }
-                else {
-                    $('div.dataTables_scrollBody').height($(window).width() * 0.23);
-                }
-            }
-            else {
-                let newHeight = $("#genome-view-svg").height() + 25;
-                $(".custom-panel-body").height(newHeight);
-            }
-        };
-
-        /**
-         * generate the labels for the plot
-         */
-        CircosPlot.prototype.setGenomeViewLabels = function() {
-            // this calculation is to set the font size to a percentage of the window width without setting it to a
-            // responsive size (vw or %) which will scale the font based on the size of the window, thus always
-            // being a little larger than we need. Once the SVG is fully rendered, if the window is scaled, the SVG will
-            // handle the scaling. However, on load, if the window is small, a numeric size (like setting it to
-            // 18px) might overlap the circos plot
-            let fontSize = $(window).width() * 0.01;
-
-            this.svg.append("text")
-                .attr("transform", "translate(10, 30)")
-                .style("font-size", fontSize)
-                .text("Outer: " + JaxSynteny.speciesRef.name);
-
-            this.svg.append("text")
-                .attr("transform", "translate(10, 60)")
-                .style("font-size", fontSize)
-                .text("Inner: " + JaxSynteny.speciesComp.name);
-        };
 
         /**
          * creates a small list to the right-hand side of the svg that lists features that are not located in a
@@ -332,8 +274,6 @@ let GenomeView;
 
             // clear the svg
             this.svg.selectAll("*").remove();
-
-            this.setGenomeViewLabels();
 
             //create and render the inner and outer plots
             this.outerPlot = new GenomeView.OuterPlot(this.referenceData, this.svg);
