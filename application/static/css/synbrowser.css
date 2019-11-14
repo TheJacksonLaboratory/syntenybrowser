@@ -287,7 +287,6 @@ hr.settings-hr {
 .custom-panel-body {
     padding: 10px;
     border: 1px #05396B solid;
-    height: 602px;
 }
 
 /* -------------------- Feature Search -------------------- */
@@ -384,10 +383,6 @@ hr.settings-hr {
     font-size: 12px;
 }
 
-#genome-view-buttons {
-    margin-top: -1vw;
-}
-
 #genome-view-buttons button {
     width: 100%;
 }
@@ -443,6 +438,12 @@ hr.settings-hr {
     width: 100%;
     min-width: 1290px;
     float: left;
+}
+
+#block-view-content p {
+    padding: 0 1em;
+    font-size: 1.2em;
+    margin-bottom: 1em;
 }
 
 #spinner-container {

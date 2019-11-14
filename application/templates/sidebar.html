@@ -24,33 +24,6 @@
             <h3>View Settings</h3>
         </div>
         <div class="settings-block">
-            Reference Species
-            <select class="form-control tooltip-enabled" id="ref-genome-select"
-                    title="The species that the reference gene identifiers are coming from." style="width:95%">
-                {% for s in species %}
-                    {% if loop.index == 1 %}
-                        <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
-                    {% else %}
-                        <option value="{{ s.id }}">{{ s.name }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="settings-block">
-            Comparison Species
-            <select class="form-control tooltip-enabled col-md-4" id="comp-genome-select"
-                    title="The species that the comparison gene identifiers are coming from." style="width: 95%;">
-                {% for s in species %}
-                    {% if loop.index == 2 %}
-                        <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
-                    {% else %}
-                        <option value="{{ s.id }}">{{ s.name }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <br/>
-        <div class="settings-block">
             Reference Genome Interval
             <input class="form-control tooltip-enabled"
                 type="text"

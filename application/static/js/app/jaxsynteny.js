@@ -114,6 +114,8 @@ let JaxSynteny;
 
             JaxSynteny.genomeView = new GenomeView.DataManager(blockURL);
 
+            $('#search-result-div').height($('#genome-view-svg').height() * 0.90);
+
             // make sure that the block view is cleared
             if(JaxSynteny.blockViewFilterMng.getblockViewBrowser()) {
                 JaxSynteny.blockViewFilterMng.cleanup();
@@ -133,6 +135,11 @@ let JaxSynteny;
 // start application execution
 $(function() {
     JaxSynteny.run();
+
+    window.onresize = function() {
+        $('#search-result-div').height($('#genome-view-svg').height() * 0.85);
+        $('#search-result .dataTables_scrollBody').height($("#search-result-div").height() * 0.80)
+    };
 
     // NOTE: this needs to be out here. it used to be in the genome view AND
     // the data manager script but since the genome view is instantiated each
@@ -243,12 +250,12 @@ $(function() {
 });
 
 function getCommonOntologies() {
-        let refAbbrevs = JaxSynteny.speciesRef.ontologies.map(function(o) { return o.abbrev; });
-        let compAbbrevs = JaxSynteny.speciesComp.ontologies.map(function(o) { return o.abbrev; });
+    let refAbbrevs = JaxSynteny.speciesRef.ontologies.map(function(o) { return o.abbrev; });
+    let compAbbrevs = JaxSynteny.speciesComp.ontologies.map(function(o) { return o.abbrev; });
 
-        let bothAbbrevs = refAbbrevs.filter(function(o) { return compAbbrevs.indexOf(o) >= 0; });
-        return bothAbbrevs.map(function(a) {
-            // there should only be one match
-            return JaxSynteny.speciesRef.ontologies.filter(function(o) { return o.abbrev === a; })[0];
-        });
-    }
+    let bothAbbrevs = refAbbrevs.filter(function(o) { return compAbbrevs.indexOf(o) >= 0; });
+    return bothAbbrevs.map(function(a) {
+        // there should only be one match
+        return JaxSynteny.speciesRef.ontologies.filter(function(o) { return o.abbrev === a; })[0];
+    });
+}

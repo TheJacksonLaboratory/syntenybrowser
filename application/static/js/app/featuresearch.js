@@ -278,24 +278,7 @@ let FeatureSearch;
                                 return col;
                             });
 
-                        let tableHeight;
-
-                        // manual breakpoints as adjusting height to window width is difficult
-                        if($(window).width() > 1875) {
-                            tableHeight = $(window).width() * 0.28;
-                        }
-                        else if($(window).width() > 1665){
-                            tableHeight = $(window).width() * 0.26;
-                        }
-                        else if($(window).width() > 1575){
-                            tableHeight = $(window).width() * 0.25;
-                        }
-                        else if($(window).width() > 1490){
-                            tableHeight = $(window).width() * 0.24;
-                        }
-                        else {
-                            tableHeight = $(window).width() * 0.23;
-                        }
+                        let tableHeight = $("#search-result-div").height() * 0.80;
 
                         // default dataTable properties for any kind of search
                         let tableProperties = {
@@ -402,6 +385,8 @@ let FeatureSearch;
             .attr("id", "search-result-table")
             .attr("class", "table table-striped table-bordered")
             .attr("width", "100%");
+
+        $('#search-result-div').height($('#genome-view-svg').height() * 0.85);
     };
 
 

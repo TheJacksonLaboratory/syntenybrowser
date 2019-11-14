@@ -2,16 +2,42 @@
 <div id="genomeView">
     <div class="heading">SYNTENY GENOME VIEW</div>
     <div class="custom-panel-body">
+        <div class="col-md-6">
+            Reference species (outer ring)
+            <select class="form-control tooltip-enabled" id="ref-genome-select"
+                    title="The species that the reference gene identifiers are coming from." style="width:95%">
+                {% for s in species %}
+                {% if loop.index == 1 %}
+                <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
+                {% else %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            Comparison species (inner ring)
+            <select class="form-control tooltip-enabled" id="comp-genome-select"
+                    title="The species that the comparison gene identifiers are coming from." style="width: 95%;">
+                {% for s in species %}
+                {% if loop.index == 2 %}
+                <option value="{{ s.id }}" selected="selected">{{ s.name }}</option>
+                {% else %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
         <svg id="genome-view-legend" style="display: none;"></svg>
         <svg id="genome-view-svg" style="background: #fff;"></svg>
         <div class="row" id="genome-view-buttons">
             <div class="col-md-3">
-                <div class="form-group">
+                <div>
                     <button id="clear-genome-view" class="custom-button" type="button">Clear</button>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
+                <div>
                     <button class="custom-button" type="button" data-toggle="modal" data-target="#genome-set-file-name">Download</button>
                 </div>
 
@@ -54,7 +80,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
+                <div>
                     <button id="show-block-view" class="custom-button" type="button">View</button>
                 </div>
             </div>
